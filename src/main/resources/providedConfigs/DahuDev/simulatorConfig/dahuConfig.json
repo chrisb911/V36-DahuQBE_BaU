@@ -17,8 +17,6 @@
   "responseVersion":"2",
   "securityTokenTTL":"14600",
   "DEFPermitsFile": "DEFPermitMap.json",
-
-
   "commands":[
     {
       "name": "send",
