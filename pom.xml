@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Use this pom to build a deployable kit. It has the necessary components for its deliverable, and
+should include any other modules (like DEFServer needed - although its down to you (or Jenkins) to pull
+them and make sure they are the correct versions -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- You need to pull the correct version of DEFServer into a directory called 'DEFServer' at the same
+    level as this module. Please make sure you pull the correct version if you are re-building this kit  -->
+    <properties>
+        <DahuDEFServer.version>3.6.4</DahuDEFServer.version>
+        <DahuVector.version>3.6.0</DahuVector.version>
+        <DahuEdge.version>3.6.0</DahuEdge.version>
+		<DahuAdminUI.version>3.6.1</DahuAdminUI.version>
+        <log4j.version>2.13.3</log4j.version>
+    </properties>
+    <scm>
+        <developerConnection>scm:git:https://dahu.codebasehq.com/def36-dahu-projects/${project.artifactId}.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.dahu</groupId>
+    <artifactId>DahuQBEbau</artifactId>
+    <name>Dahu QBE B.A.U</name>
+    <version>3.2.14-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://18.130.39.61:8080/repository/internal/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Archiva Managed Snapshot Repository</name>
+            <url>http://18.130.39.61:8080/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <!-- we have a few other directories that we create - get rid of them when we do a 'clean' -->
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>run</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>df-export</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>df-daily-export</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}</directory>
+                            <includes>
+                                <include>*.zip</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14.1</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>-Djava.library.path=./src/main/natives/mac-x86_64</argLine>
+                    <!-- unit tests described in this file -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>functionalTestsNG.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.21.0</version>
+                <configuration>
+                    <!-- specifying each suite in turns allows us to avoid clashes with broker -->
+                    <workingDirectory>${project.build.directory}</workingDirectory>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>integrationTestsNG.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <checkModificationExcludes>
+                        <checkModificationExclude>DahuCore.iml</checkModificationExclude>
+                    </checkModificationExcludes>
+                </configuration>
+            </plugin>
+            <!-- Shade plugin is used to actually build the component jar file, in this case (DEF Server) with a manifest
+            that loads the log4j jars delivered separately by the deployment qbe because of a naming clash within the two
+            jars. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>config/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                            </artifactSet>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Implementation-Title>com.dahu</Implementation-Title>
+                                        <Implementation-Version>${project.version}</Implementation-Version>
+                                        <Implementation-Vendor>Dahu Ltd</Implementation-Vendor>
+                                        <Class-Path>./log4j-api-${log4j.version}.jar ./log4j-core-${log4j.version}.jar</Class-Path>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <!-- we use the dependency plugin to unpack the zip files we get from archiva
+            and also to rename the jar files we get from archiva. we need to do this early as its
+            possible (likely) that integration tests and functional tests will need to use
+            the resources and services defined therein. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-and-copy-server-zip</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuDEFServer</artifactId>
+                                    <version>${DahuDEFServer.version}</version>
+                                    <classifier>resources</classifier>
+                                    <overWrite>true</overWrite>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <excludeTypes>pom</excludeTypes>
+                            <excludeTypes>jar</excludeTypes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-vector</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuVector</artifactId>
+                                    <version>${DahuVector.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <type>jar</type>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-DEFServer</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuDEFServer</artifactId>
+                                    <version>${DahuDEFServer.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <type>jar</type>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuDEFServer</artifactId>
+                                    <version>${DahuDEFServer.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-log4j-api</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>false</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.logging.log4j</groupId>
+                                    <artifactId>log4j-api</artifactId>
+                                    <version>${log4j.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.logging.log4j</groupId>
+                                    <artifactId>log4j-api</artifactId>
+                                    <version>${log4j.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-log4j-core</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>false</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.logging.log4j</groupId>
+                                    <artifactId>log4j-core</artifactId>
+                                    <version>${log4j.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.logging.log4j</groupId>
+                                    <artifactId>log4j-core</artifactId>
+                                    <version>${log4j.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                    <id>copy-project-jar</id>
+                    <phase>install</phase>
+                    <goals>
+                        <goal>copy</goal>
+                    </goals>
+                    <configuration>
+                        <stripVersion>true</stripVersion>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>com.dahu</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <overWrite>true</overWrite>
+                                <type>jar</type>
+                                <outputDirectory>${basedir}/run/lib</outputDirectory>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <overWriteReleases>false</overWriteReleases>
+                    <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-apache-regexp</artifactId>
+                        <version>1.10.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-run-directories</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <echo>creating new folders in ${basedir}</echo>
+                                <mkdir dir="${basedir}/run" />
+                                <mkdir dir="${basedir}/run/lib" />
+                                <mkdir dir="${basedir}/run/lib/native" />
+                                <mkdir dir="${basedir}/run/tools" />
+                                <mkdir dir="${basedir}/run/logs" />
+                                <mkdir dir="${basedir}/run/config" />
+                                <mkdir dir="${basedir}/run/providedConfigs" />
+                                <mkdir dir="${basedir}/run/resources" />
+                                <mkdir dir="${basedir}/run/cache" />
+								<mkdir dir="${basedir}/run/adminRoot" />
+								<mkdir dir="${basedir}/run/adminRoot/images" />
+								<mkdir dir="${basedir}/run/adminRoot/images/themeImages" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <tasks>
+                                <echo>creating new folders in ${basedir}/target</echo>
+                                <mkdir dir="${project.build.directory}/lib" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${project.build.directory}/lib">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.artifactId}*tests.jar" />
+                                    </fileset>
+                                    <mapper type="regexp" from="^(.+?)-[0-9]+.*\.jar$" to="\1.tests.jar" />
+                                </copy>
+                                <copy todir="${project.build.directory}">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.artifactId}-${project.version}.jar" />
+                                        <!--filename name="*test*" negate="true" />
+                                        <filename name="*original*" negate="true" />
+                                        <filename name="*sources*" negate="true" /-->
+                                    </fileset>
+                                    <mapper type="regexp" from="^(.+?)-[0-9]+.*\.jar$" to="\1.jar" />
+                                </copy>
+                                <copy todir="${project.build.directory}/lib">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.artifactId}-${project.version}.jar" />
+                                        <!--filename name="*test*" negate="true" />
+                                        <filename name="*original*" negate="true" />
+                                        <filename name="*sources*" negate="true" /-->
+                                    </fileset>
+                                    <mapper type="regexp" from="^(.+?)-[0-9]+.*\.jar$" to="\1.jar" />
+                                </copy>
+                                <!-- copy the keystore so it exists outside of jar as well as inside - use for test of external keystore file in jetty   -->
+                                <copy todir="${project.build.directory}">
+                                    <fileset dir="${project.build.directory}/classes">
+                                        <include name="keystore.jks" />
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-run-resources</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+
+                                <copy todir="${basedir}/run/lib">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.artifactId}*.jar" />
+                                    </fileset>
+                                    <mapper type="regexp" from="^(.+?)-[0-9]+.*\.jar$" to="\1.jar" />
+                                </copy>
+                                <copy todir="${basedir}/run/config">
+                                    <fileset dir="${basedir}/src/main/resources/config">
+                                        <include name="**" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/config">
+                                    <fileset dir="${basedir}/src/main/resources/config">
+                                        <include name="**" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run/providedConfigs">
+                                    <fileset dir="${basedir}/src/main/resources/providedConfigs">
+                                        <include name="**" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run">
+                                    <fileset dir="${basedir}/src/main/resources">
+                                        <include name="*.jks" />
+                                        <include name="wcc_keystore" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run/lib/native">
+                                    <fileset dir="${basedir}/src/main/natives">
+                                        <include name="**" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/lib/native">
+                                    <fileset dir="${basedir}/src/main/natives">
+                                        <include name="**" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run">
+                                    <fileset dir="${project.build.directory}/dependency/DahuDEFServer-${DahuDEFServer.version}">
+                                        <include name="*.jks" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}">
+                                    <fileset dir="${project.build.directory}/dependency/DahuDEFServer-${DahuDEFServer.version}">
+                                        <include name="*.jks" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run/tools">
+                                    <fileset dir="${project.build.directory}/dependency/DahuDEFServer-${DahuDEFServer.version}/tools">
+                                        <include name="*.sh" />
+                                        <include name="*.exe" />
+                                        <include name="*.bat" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run/tools">
+                                    <fileset dir="${basedir}/src/main/resources/tools">
+                                        <include name="*.sh" />
+                                        <include name="*.exe" />
+                                        <include name="*.bat" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${basedir}/run">
+                                    <fileset dir="${basedir}/src/main/resources/tools">
+                                        <include name="*.pl" />
+                                    </fileset>
+                                </copy>
+								<copy todir="${basedir}/run/adminRoot">
+									<fileset dir="${project.build.directory}/dependency/DahuAdminUI-${DahuAdminUI.version}/adminRoot">
+								    	<include name="**" />
+								   	</fileset>
+                                    <fileset dir="${basedir}/src/main/resources/adminRoot">
+                                        <include name="*.js" />
+                                    </fileset>
+								</copy>
+
+                                <chmod perm="755">
+                                    <fileset dir="${basedir}/run/tools">
+                                        <include name="*.sh" />
+                                    </fileset>
+                                </chmod>
+
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <!--execution>
+                        <id>zip-kit</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <echo>prepping and zipping up the final kit</echo>
+                                <chmod file="${basedir}/run/tools/DEFStart.sh" perm="+x" />
+                                <chmod file="${basedir}/run/tools/DEFEncrypt.sh" perm="+x" />
+                                <zip destfile="${basedir}/${project.artifactId}-${project.version}.zip" basedir="${basedir}/run" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution-->
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuDEFServer</artifactId>
+            <version>${DahuDEFServer.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuDEFServer</artifactId>
+            <version>${DahuDEFServer.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuVector</artifactId>
+            <version>${DahuVector.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuEdge</artifactId>
+            <version>${DahuEdge.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuAdminUI</artifactId>
+            <version>${DahuAdminUI.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.perceptive</groupId>
+            <artifactId>DocumentFilters</artifactId>
+            <version>11.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>jcifs</groupId>
+            <artifactId>jcifs</artifactId>
+            <version>1.3.17</version>
+        </dependency>
+    </dependencies>
+</project>

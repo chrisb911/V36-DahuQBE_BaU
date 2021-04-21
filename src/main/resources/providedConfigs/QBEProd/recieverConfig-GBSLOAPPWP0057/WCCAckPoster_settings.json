@@ -1,0 +1,18 @@
+{
+  "DEFSettings":{
+    "runAtStartup":"false"
+  },
+  "pluginSettings":{
+    "interval":"30000",
+    "logLevel":"WARN",
+    "ackCache":"D:/DEFSHARE/ackCache",
+    "username":"weblogic",
+    "password":{"type": "encrypted","values": "VMo97/418T8Yo/KjTg3oKQ=="},
+    "server":"app-wcc.corp.qbe.com",
+    "port":"443",
+    "protocol":"https",
+    "certPath":"wcc_keystore",
+    "urlBase":"cs",
+    "batchSize":"20"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "_COMMENT_": "userPermits are patterns of user names or group names.",
+  "_COMMENT_":"Any user name or group that matches a pattern is assigned the permits defined for that pattern.",
+  "_COMMENT_": "If there are multiple matches for a username, then all matching permits are assigned to them, just as they are assigned the union of all permits for their user name and for all groups they belong to",
+  "userPermits": {
+
+    "*@dahu.co.uk": {
+      "permits": "admin,search,services"
+    }
+  },
+  "_COMMENT_": "permitGrants map from permits assigned to users above, and DEF resources, such as Commands and Services",
+  "_COMMENT_": "A user requesting any resource from DEF Server must have been granted at least one permit that grants access to that resource",
+  "permitGrants": {
+  }
+}

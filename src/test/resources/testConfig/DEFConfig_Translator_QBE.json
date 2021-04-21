@@ -1,0 +1,48 @@
+{
+  "logLevel":"TRACE",
+  "name":"Dahu QBE bau - translator",
+  "port":"10101",
+  "threads":"500",
+  "admin":"true",
+  "adminUI":"true",
+  "plugins":"lib",
+  "responseVersion":"2",
+  "startMQBroker": "false",
+  "crossOrigin":"true",
+  "commands": [
+    {
+      "name": "WCCTranslator",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WccCommandCache",
+      "settingsFile":"DEFConfig_Translator_WCC_settings.json"
+    }
+  ],
+  "events":[
+	{
+		"name":"Acknowledge_event",
+		"jar":"DahuQBEbau.jar",
+		"class":"com.dahu.qbe.events.batchPostToWCC",
+		"settingsFile":"DEFConfig_Translator_Ack_Event.json"
+	},
+    {
+      "name":"ProcessCache_event",
+      "jar":"DahuQBEbau.jar",
+      "class":"com.dahu.qbe.events.ProcessCachedIDocs",
+      "settingsFile":"DEFConfig_Translator_Ack_ProcessCache.json"
+    }
+  ],
+  "queues":[
+    {
+      "name":"ackQueue",
+      "MQBroker":"tcp://192.168.1.55:61616",
+      "persistent":"false",
+	  "prefetch_size":"1000"
+    },
+    {
+      "name":"filterQueue_1",
+      "MQBroker":"tcp://192.168.1.55:61616",
+      "persistent":"false"
+    }
+  ]
+}
+

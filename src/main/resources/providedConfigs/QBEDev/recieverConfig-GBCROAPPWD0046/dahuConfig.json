@@ -1,0 +1,60 @@
+{
+  "logLevel":"DEBUG",
+  "name":"DEF-WCC Receiver",
+  "threads":"40",
+  "admin":"true",
+  "adminUI":"true",
+  "searchUI": "true",
+  "DEFprotocol": "https",
+  "httpsPort": "10101",
+  "httpPort": "8091",
+  "adminHttpPort": "8092",
+  "adminHttpsPort": "10102",
+  "tokenSecurity": "false",
+  "startMQBroker": "false",
+  "adminDocRoot": "./adminRoot",
+  "plugins":"./lib",
+  "crossOrigin":"true",
+  "responseVersion":"2",
+  "securityTokenTTL":"14600",
+  "DEFPermitsFile": "DEFPermitMap.json",
+  "metrics": [
+    {
+      "name": "ackCache-46",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbcroappwd0046",
+      "label": "Acknowledgement cache gbcroappwd0046"
+    },
+    {
+      "name": "ackCache-48",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbcroappwd0048",
+      "label": "Acknowledgement cache gbcroappwd0048"
+    },
+    {
+      "name": "docCache-48",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbcroappwd0048",
+      "label": "Document cache gbcroappwd0048"
+    }
+  ],
+  "secondaryServers": [
+    "https://gbcroappwd0048:10102"
+  ],
+  "commands":[
+    {
+      "name": "WCCReceiver",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WCCReceiver",
+      "settingsFile": "WCCReceiver_settings.json"
+    }
+  ],
+  "events": [
+    {
+      "name": "WCCAckPoster",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.events.WCCAckPoster",
+      "settingsFile":"WCCAckPoster_settings.json"
+    }
+  ]
+}

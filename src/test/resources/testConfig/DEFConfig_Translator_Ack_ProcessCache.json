@@ -1,0 +1,15 @@
+{
+  "resources": {
+    "interval": "10000",
+    "runAtStartup": "true",
+    "outputQueues": [
+      "filterQueue_1"
+    ]
+  },
+  "properties": {
+    "pendingCache": "pendingCache"
+  }
+}
+
+
+

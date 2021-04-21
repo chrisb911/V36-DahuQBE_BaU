@@ -1,0 +1,8 @@
+{
+  "DEFSettings": {
+  },
+  "pluginSettings": {
+    "postServer": "https://localhost:10101/api/WCCReceiver",
+    "documentDirectory": "/Users/chrisbartlett/Development/QBE/3-6BaU/DahuQBEbau/run/providedConfigs/DahuDev/simulatorConfig/simulatorTestData"
+  }
+}

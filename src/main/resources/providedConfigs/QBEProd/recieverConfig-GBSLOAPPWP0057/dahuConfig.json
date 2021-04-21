@@ -1,0 +1,90 @@
+{
+  "logLevel":"DEBUG",
+  "name":"DEF-WCC Receiver",
+  "threads":"40",
+  "admin":"true",
+  "adminUI":"true",
+  "searchUI": "true",
+  "DEFprotocol": "https",
+  "httpsPort": "10101",
+  "httpPort": "8091",
+  "adminHttpPort": "8092",
+  "adminHttpsPort": "10102",
+  "tokenSecurity": "false",
+  "startMQBroker": "false",
+  "adminDocRoot": "./adminRoot",
+  "plugins":"./lib",
+  "crossOrigin":"true",
+  "responseVersion":"2",
+  "securityTokenTTL":"14600",
+  "DEFPermitsFile": "DEFPermitMap.json",
+  "keystorePath": "QBEKeystore.jks",
+  "KeystorePassword": {
+    "type": "encrypted","values": "KVqFdMfxOi/ScrlypunB7g=="
+  },
+  "metrics": [
+    {
+      "name": "ackCache-57",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbsloappwp0057",
+      "label": "Acknowledgement cache gbsloappwp0057"
+    },
+    {
+      "name": "ackCache-80",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbsloappwp0080",
+      "label": "Acknowledgement cache gbsloappwp0080"
+    },
+    {
+      "name": "ackCache-81",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbsloappwp0081",
+      "label": "Acknowledgement cache gbsloappwp0081"
+    },
+    {
+      "name": "ackCache-82",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbsloappwp0082",
+      "label": "Acknowledgement cache gbsloappwp0082"
+    },
+    {
+      "name": "docCache-80",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbsloappwp0080",
+      "label": "Document cache gbsloappwp0080"
+    },
+    {
+      "name": "docCache-81",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbsloappwp0081",
+      "label": "Document cache gbsloappwp0081"
+    },
+    {
+      "name": "docCache-82",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbsloappwp0082",
+      "label": "Document cache gbsloappwp0082"
+    }
+  ],
+  "secondaryServers": [
+    "https://gbsloappwp0080:10102",
+    "https://gbsloappwp0081:10102",
+    "https://gbsloappwp0082:10102"
+  ],
+  "commands":[
+    {
+      "name": "WCCReceiver",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WCCReceiver",
+      "settingsFile": "WCCReceiver_settings.json"
+    }
+  ],
+  "events": [
+    {
+      "name": "WCCAckPoster",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.events.WCCAckPoster",
+      "settingsFile":"WCCAckPoster_settings.json"
+    }
+  ]
+}

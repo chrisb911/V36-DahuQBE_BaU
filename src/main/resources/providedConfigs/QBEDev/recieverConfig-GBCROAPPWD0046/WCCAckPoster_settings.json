@@ -1,0 +1,18 @@
+{
+  "DEFSettings":{
+    "runAtStartup":"false"
+  },
+  "pluginSettings":{
+    "interval":"30000",
+    "logLevel":"WARN",
+    "ackCache":"D:/DEFSHARE/ackCache",
+    "username":"weblogic",
+    "password":"none",
+    "server":"GBCROSQLWD0047.corp.qbe.com",
+    "port":"10101",
+    "protocol":"http",
+    "certPath":"QBEKeystore.jks",
+    "urlBase":"api/cs",
+    "batchSize":"10"
+  }
+}

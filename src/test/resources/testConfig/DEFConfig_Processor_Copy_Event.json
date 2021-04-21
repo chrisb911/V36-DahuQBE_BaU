@@ -1,0 +1,13 @@
+{
+  "resources": {
+    "interval": "36000",
+    "runAtStartup": "true"
+  },
+  "properties": {
+    "inputFolder": "df-daily-export/current",
+    "outputFolder": "pes-export"
+  }
+}
+
+
+

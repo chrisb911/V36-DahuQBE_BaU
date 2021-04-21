@@ -1,0 +1,83 @@
+{
+  "logLevel":"DEBUG",
+  "name":"DEF-PES Processor",
+  "threads":"40",
+  "admin":"true",
+  "adminUI":"true",
+  "searchUI": "true",
+  "DEFprotocol": "https",
+  "httpsPort": "10101",
+  "httpPort": "8091",
+  "adminHttpPort": "8092",
+  "adminHttpsPort": "10102",
+  "tokenSecurity": "false",
+  "adminDocRoot": "./adminRoot",
+  "plugins":"./lib",
+  "crossOrigin":"true",
+  "responseVersion":"2",
+  "securityTokenTTL":"14600",
+  "DEFPermitsFile": "DEFPermitMap.json",
+  "keystorePath": "QBEKeystore.jks",
+  "KeystorePassword": {
+    "type": "encrypted","values": "SThMOaHz48d1ooH+dc9khQ=="
+  },
+  "metrics": [
+    {
+      "name": "pendingCache",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache",
+      "label": "Pending cache"
+    },
+    {
+      "name": "dailyExport-current",
+      "type": "directoryCount",
+      "resource": "D:/daily-export/current",
+      "label": "Daily export"
+    }
+  ],
+  "services":[
+    {
+      "name":"Vector",
+      "class":"com.dahu.vector.core.VectorService",
+      "settingsFile":"dahuVector_settings.json",
+      "threads":"3"
+    }
+
+  ],
+  "events": [
+    {
+      "name": "DEFDocumentTransfer",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.events.DEFDocumentTransfer",
+      "settingsFile":"DEFDocumentTransfer_settings.json"
+    }
+  ],
+  "queues":[
+    {
+      "name":"processorQueue",
+      "persistent":"false"
+    }
+  ],
+  "components":[
+    {
+      "name":"DEFLoadCachedDocument",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.processors.DEFLoadCachedDocument"
+    },
+    {
+      "name":"PESFilterDocument",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.processors.PESFilterDocument"
+    },
+    {
+      "name":"DEFCopyToDailyCache",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.processors.DEFCopyToDailyCache"
+    },
+    {
+      "name":"DEFCleanAndAcknowledge",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.terminators.DEFCleanAndAcknowledge"
+    }
+  ]
+}

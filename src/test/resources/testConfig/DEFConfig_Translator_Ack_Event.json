@@ -1,0 +1,22 @@
+{
+  "resources": {
+    "interval": "60000",
+    "runAtStartup": "false",
+    "inputQueues": [
+      "ackQueue"
+    ]
+  },
+  "properties": {
+    "username": "chris",
+    "password": "gobbledegook",
+    "server": "localhost",
+    "port": "10103",
+    "protocol": "https",
+    "certPath": "keystore.jks",
+    "urlBase": "api/cs",
+    "batchSize": "20"
+  }
+}
+
+
+

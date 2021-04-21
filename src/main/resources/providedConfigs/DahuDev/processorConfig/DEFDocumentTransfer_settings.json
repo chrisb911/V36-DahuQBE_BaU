@@ -1,0 +1,12 @@
+{
+  "DEFSettings":{
+    "outputQueues":["processorQueue"],
+    "runAtStartup":"false"
+  },
+  "pluginSettings":{
+    "interval":"30000",
+    "logLevel":"WARN",
+    "remoteCache":"/Users/chrisbartlett/Development/QBE/3-6BaU/DahuQBEbau/rec-run/pendingCache/filterCache_82",
+    "localCache":"localPendingCache"
+  }
+}

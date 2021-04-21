@@ -1,0 +1,27 @@
+{
+  "DEFSettings": {
+  },
+  "pluginSettings": {
+    "pendingCache": "D:/DEFSHARE/docCache",
+    "ackCache": "D:/DEFSHARE/ackCache",
+    "ackCacheFolder": "GBSLOAPPWP0057",
+    "queueMapping": {
+      "GBSLOAPPWP0080": [
+        "financial",
+        "qbe",
+        "others",
+        "medical"
+        ],
+      "GBSLOAPPWP0081": [
+        "proceedings",
+        "broker",
+        "history"
+        ],
+      "GBSLOAPPWP0082": [
+        "cru",
+        "thirdparty",
+        "reports"
+      ]
+    }
+  }
+}

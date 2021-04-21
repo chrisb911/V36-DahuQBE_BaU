@@ -1,0 +1,30 @@
+Droid Fonts Overview
+
+http://www.droidfonts.com/
+
+The following is a list of Droid fonts found in the Android SDK:
+
+Droid Sans (regular, bold)
+Droid Sans Mono (regular, bold)
+Droid Serif (regular, italic, bold, bold italic)
+
+The new Droid font collection provides an extensive set of styles, weights and
+language support. Each of the Droid fonts was custom designed by Ascender and
+optimized for on-screen legibility with the Android platform.
+
+Each of the Droid fonts contains an extensive character set with coverage
+including Western Europe, Eastern/Central Europe, Baltic, Cyrillic, Greek
+and Turkish.
+
+Support for CJK is provided by the Droid Sans "fallback" font. This font
+contains over 43,000 glyphs and includes support for Simplified Chinese (GB2312),
+Traditional Chinese (Big 5), Japanese (JIS 0208) and Korean (KSC 5601).
+
+This font uses the Simplified Chinese ideographs for shared Unicode code points.
+
+Font Licenses
+
+The Droid fonts included with the Android SDK are distributed under the Apache
+License, Version 2.0.
+
+http://www.apache.org/licenses/LICENSE-2.0

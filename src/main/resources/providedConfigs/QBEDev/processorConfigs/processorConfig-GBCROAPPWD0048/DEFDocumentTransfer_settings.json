@@ -1,0 +1,12 @@
+{
+  "DEFSettings":{
+    "outputQueues":["processorQueue"],
+    "runAtStartup":"false"
+  },
+  "pluginSettings":{
+    "interval":"30000",
+    "logLevel":"WARN",
+    "remoteCache":"//GBCROAPPWD0046/DEFSHARE/docCache/GBCROAPPWD0048",
+    "localCache":"D:/DEFSHARE/docCache"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "DEFSettings": {
+  },
+  "pluginSettings": {
+    "pendingCache": "pendingCache",
+    "ackCache": "ackCache",
+    "ackCacheFolder": "primary",
+    "queueMapping": {
+      "filterCache_80": [
+        "financial",
+        "qbe",
+        "others",
+        "medical"
+      ],
+      "filterCache_81": [
+        "proceedings",
+        "broker",
+        "history"
+      ],
+      "filterCache_82": [
+        "cru",
+        "thirdparty",
+        "reports"
+      ]
+    }
+  }
+}

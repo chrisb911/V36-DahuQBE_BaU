@@ -1,0 +1,23 @@
+{
+  "resources":{
+    "outputQueues":["ackQueue"]
+  },
+  "properties": {
+    "acknowledgeQueue": "ackQueue",
+    "pendingCache": "pendingCache",
+    "queueMapping": {     
+      "filterQueue_1": [
+	   "financial",
+        "qbe",
+        "others",
+        "medical",
+        "proceedings",
+        "broker",
+        "history",
+        "cru",
+        "thirdparty",
+        "reports"
+      ]
+    }
+  }
+}

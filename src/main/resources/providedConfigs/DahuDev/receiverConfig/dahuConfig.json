@@ -1,0 +1,84 @@
+{
+  "logLevel":"DEBUG",
+  "name":"DEF-WCC Receiver",
+  "threads":"40",
+  "admin":"true",
+  "adminUI":"true",
+  "searchUI": "true",
+  "DEFprotocol": "https",
+  "httpsPort": "10101",
+  "httpPort": "8081",
+  "adminHttpPort": "8082",
+  "adminHttpsPort": "10102",
+  "tokenSecurity": "false",
+  "adminDocRoot": "./adminRoot",
+  "plugins":"./lib",
+  "crossOrigin":"true",
+  "responseVersion":"2",
+  "securityTokenTTL":"14600",
+  "DEFPermitsFile": "DEFPermitMap.json",
+  "metrics": [
+    {
+      "name": "ackCache",
+      "type": "directoryCount",
+      "resource": "ackCache/primary",
+      "label": "Primary Acknowledgement cache"
+    },
+    {
+      "name": "ackCache80",
+      "type": "directoryCount",
+      "resource": "ackCache/ackCache-80",
+      "label": "Acknowledgement cache - 80"
+    },
+    {
+      "name": "ackCache81",
+      "type": "directoryCount",
+      "resource": "ackCache/ackCache-81",
+      "label": "Acknowledgement cache - 81"
+    },
+    {
+      "name": "ackCache82",
+      "type": "directoryCount",
+      "resource": "ackCache/ackCache-82",
+      "label": "Acknowledgement cache - 82"
+    },
+    {
+      "name": "pendingCache80",
+      "type": "directoryCount",
+      "resource": "pendingCache/filterCache_80",
+      "label": "Pending cache - 80"
+    },
+    {
+      "name": "pendingCache81",
+      "type": "directoryCount",
+      "resource": "pendingCache/filterCache_81",
+      "label": "Pending cache - 81"
+    },
+    {
+      "name": "pendingCache82",
+      "type": "directoryCount",
+      "resource": "pendingCache/filterCache_82",
+      "label": "Pending cache - 82"
+    }
+  ],
+  "secondaryServers": [
+    "https://localhost:10104",
+    "https://localhost:10106"
+  ],
+  "commands":[
+    {
+      "name": "WCCReceiver",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WCCReceiver",
+      "settingsFile": "WCCReceiver_settings.json"
+    }
+  ],
+  "events": [
+    {
+      "name": "WCCAckPoster",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.events.WCCAckPoster",
+      "settingsFile":"WCCAckPoster_settings.json"
+    }
+  ]
+}

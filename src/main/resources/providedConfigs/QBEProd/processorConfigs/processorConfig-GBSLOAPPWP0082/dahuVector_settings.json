@@ -1,0 +1,38 @@
+{
+  "DEFSettings":{
+    "inputQueues":["processorQueue"],
+    "serviceGroup":"PES"
+  },
+  "pluginSettings": {
+    "autoStart":"true",
+    "combinedLogFile": "true",
+    "components":{
+      "DEFLoadCachedDocument": {
+        "priority":"1"
+      },
+      "PESFilterDocument":{
+        "priority":"2",
+        "outputFormat": "ld_html",
+        "outputFolder": "df-export",
+        "license": "NQMZ9 GAJM9 FNXFG 65V73 QGWZX XM7QU",
+        "ocr": "on",
+        "folderDepth": "3",
+        "docfiltersPath": "./lib",
+        "imageurl": "https://gbsloappwp0082.corp.qbe.com/df"
+      },
+      "DEFCopyToDailyCache":{
+        "priority":"3",
+        "inputFolder": "D:df-export",
+        "outputFolder": "D:/df-daily-export",
+        "folderDepth": "3",
+        "zipPrefix" : "GBSLOAPPWP0082",
+        "zipPassword":{"type": "encrypted","values": "uonhMZ31UDuE0vbxBVgchA=="},
+        "dropFolder":"current"
+      },
+      "DEFCleanAndAcknowledge":{
+        "ackCache": "//GBSLOAPPWP0057/DEFSHARE/ackCache",
+        "ackCacheFolder": "GBSLOAPPWP0082"
+      }
+    }
+  }
+}

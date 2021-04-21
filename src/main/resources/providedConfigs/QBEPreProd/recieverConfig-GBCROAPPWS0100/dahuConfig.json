@@ -1,0 +1,90 @@
+{
+  "logLevel":"DEBUG",
+  "name":"DEF-WCC Receiver",
+  "threads":"40",
+  "admin":"true",
+  "adminUI":"true",
+  "searchUI": "true",
+  "DEFprotocol": "https",
+  "httpsPort": "10101",
+  "httpPort": "8091",
+  "adminHttpPort": "8092",
+  "adminHttpsPort": "10102",
+  "tokenSecurity": "false",
+  "startMQBroker": "false",
+  "adminDocRoot": "./adminRoot",
+  "plugins":"./lib",
+  "crossOrigin":"true",
+  "responseVersion":"2",
+  "securityTokenTTL":"14600",
+  "DEFPermitsFile": "DEFPermitMap.json",
+  "keystorePath": "QBEKeystore.jks",
+  "KeystorePassword": {
+    "type": "encrypted","values": "SIV5/lgf0EPdCfhJ8dnDmA=="
+  },
+  "metrics": [
+    {
+      "name": "ackCache-100",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbcroappws0100",
+      "label": "Acknowledgement cache gbcroappws0100"
+    },
+    {
+      "name": "ackCache-102",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbcroappws0102",
+      "label": "Acknowledgement cache gbcroappws0102"
+    },
+    {
+      "name": "ackCache-103",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbcroappws0103",
+      "label": "Acknowledgement cache gbcroappws0103"
+    },
+    {
+      "name": "ackCache-104",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/ackCache/gbcroappws0104",
+      "label": "Acknowledgement cache gbcroappwS0104"
+    },
+    {
+      "name": "docCache-102",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbcroappws0102",
+      "label": "Document cache gbcroappws0102"
+    },
+    {
+      "name": "docCache-103",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbcroappws0103",
+      "label": "Document cache gbcroappws0103"
+    },
+    {
+      "name": "docCache-104",
+      "type": "directoryCount",
+      "resource": "D:/DEFSHARE/docCache/gbcroappws0104",
+      "label": "Document cache gbcroappws0104"
+    }
+  ],
+  "secondaryServers": [
+    "https://gbcroappws0102:10102",
+    "https://gbcroappws0103:10102",
+    "https://gbcroappws0104:10102"
+  ],
+  "commands":[
+    {
+      "name": "WCCReceiver",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WCCReceiver",
+      "settingsFile": "WCCReceiver_settings.json"
+    }
+  ],
+  "events": [
+    {
+      "name": "WCCAckPoster",
+      "jar": "DahuQBEbau.jar",
+      "class":"com.dahu.qbe.events.WCCAckPoster",
+      "settingsFile":"WCCAckPoster_settings.json"
+    }
+  ]
+}
