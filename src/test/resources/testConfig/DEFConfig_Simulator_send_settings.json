@@ -1,0 +1,8 @@
+{
+  "DEFSettings": {
+  },
+  "pluginSettings": {
+    "postServer": "https://localhost:10101/api/WCCReceiver",
+    "documentDirectory": "../../src/test/resources/testDocs"
+  }
+}

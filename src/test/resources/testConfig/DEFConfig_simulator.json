@@ -1,0 +1,36 @@
+{
+  "logLevel":"DEBUG",
+  "name":"(Fake) WCC",
+  "threads":"40",
+  "admin":"true",
+  "adminUI":"true",
+  "searchUI": "true",
+  "DEFprotocol": "https",
+  "httpPort": "8085",
+  "httpsPort": "10105",
+  "adminHttpPort": "8086",
+  "adminHttpsPort": "10106",
+  "tokenSecurity": "false",
+  "adminDocRoot": "./adminRoot",
+  "plugins":"../lib",
+  "crossOrigin":"true",
+  "responseVersion":"2",
+  "securityTokenTTL":"14600",
+  "DEFPermitsFile": "DEFPermitMap.json",
+
+
+  "commands":[
+    {
+      "name": "send",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WCCSendSimulator",
+      "settingsFile": "DEFConfig_Simulator_send_settings.json"
+    },
+    {
+      "name": "cs",
+      "jar": "DahuQBEbau.jar",
+      "class": "com.dahu.qbe.commands.WCCReceiveSimulator",
+      "settingsFile": "DEFConfig_Simulator_receive_settings.json"
+    }
+  ]
+}

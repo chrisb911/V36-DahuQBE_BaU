@@ -5,6 +5,8 @@ package com.dahu.qbe;
         import org.testng.annotations.Test;
 
 
+        import java.io.File;
+
         import static com.dahu.qbe.TestUtils.*;
         import static org.testng.Assert.assertFalse;
         import static org.testng.Assert.assertTrue;
@@ -42,32 +44,38 @@ public class TestDahuQBEIntegrationTests {
         System.out.println("          *  from Hyland to successfully run the tests. *");
         System.out.println("          *  The license is set in the config file for  *");
         System.out.println("          *  the processor:                             *");
-        System.out.println("          *  DEFConfig_Processor_Filter_pipeline.json   *");
+        System.out.println("          *  DEFConfig_Processor_Vector_settings.json   *");
         System.out.println("          *                                             *");
         System.out.println("          ***********************************************");
         System.out.println();
 
 
         System.out.println("starting Translator server on 10101");
-        process1 = startTestServer("../src/test/resources/testConfig","DEFConfig_Translator_QBE.json");
+        process1 = startTestServer("../../src/test/resources/testConfig","DEFConfig_Receiver.json","receiver");
 
-        System.out.println("starting Processor server on 10102");
-        process2 = startTestServer("../src/test/resources/testConfig","DEFConfig_Processor_QBE.json");
+        System.out.println("starting Processor server on 10103");
+        process2 = startTestServer("../../src/test/resources/testConfig","DEFConfig_Processor.json","processor");
 
-        System.out.println("starting Fake WCC server on 10103");
-        process3 = startTestServer("../src/test/resources/testConfig","DEFConfig_FakeWCC_QBE.json");
+        System.out.println("starting WCC Simulator server on 10105");
+        process3 = startTestServer("../../src/test/resources/testConfig","DEFConfig_Simulator.json","simulator");
 
     }
 
     @AfterSuite
     public void teardownServers(){
 
-        System.out.println("stopping Translator server on 10101");
+        System.out.println("stopping Receiver server on 10101");
         stopServer(process1);
-        System.out.println("stopping Processor server on 10102");
+        File receiverTarget = new File("./target" + File.separator + "receiver");
+        receiverTarget.delete();
+        System.out.println("stopping Processor server on 10103");
         stopServer(process2);
-        System.out.println("stopping FakeWCC server on 10103");
+        File processorTarget = new File("./target" + File.separator + "processor");
+        processorTarget.delete();
+        System.out.println("stopping Simulator server on 10105");
         stopServer(process3);
+        File simulatorTarget = new File("./target" + File.separator + "simulator");
+        simulatorTarget.delete();
     }
 
 
@@ -75,10 +83,30 @@ public class TestDahuQBEIntegrationTests {
     //start up the tests
     public void testI1(){
 
-        // first test - push a doc and check it gets written to the output folders
-        String response = testServerUrl("https://localhost:10103/api/send/addNewTest1");
+        // first thing - get the WCC simulator to push a doc
+        String workDir = System.getProperty("user.dir");
+
+        String response = testServerUrl("https://localhost:10105/api/send/addNewTest1");
         System.out.println("response = " + response);
-        assertTrueContains(response,"{\"DEFResponse\": {\"version\": \"2.0\",\"requestStatus\": \"OK\", \"authenticationStatus\": \"unsecure\",\"authToken\": \"null\",\"shortMessage\":\"null\",\"payload\":{\"FakeWCCSendCommand\":\"id=addNewTest1\"}}}");
+
+        assertTrueDoesNotContain(response,"{\"DEFResponse\": {\"version\": \"2.0\",\"requestStatus\": \"OK\", \"authenticationStatus\": \"unsecure\",\"authToken\": \"null\",\"shortMessage\":\"null\",\"payload\":{\"FakeWCCSendCommand\":\"id=addNewTest1\"}}}");
+
+        //wait 15 secs and check the processor has output
+        System.out.println("Sleeping for 15 secs");
+        try {
+            Thread.sleep(15000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Checking for docs");
+        String responseDocsPath = workDir + File.separator + "Processor" + File.separator + "df-daily-export" + File.separator + "current";
+        System.out.println("Checking for output in " + responseDocsPath);
+        File responseDocs[] = new File(responseDocsPath).listFiles();
+        if (null != responseDocs) {
+            System.out.println(String.format("Found %d output files", responseDocs.length));
+            assertFalse(responseDocs.length!=1);
+        }
+
     }
 
 }

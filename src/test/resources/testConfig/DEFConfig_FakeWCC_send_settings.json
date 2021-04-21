@@ -1,8 +1,0 @@
-{
-  "resources":{
-  },
-  "properties": {
-    "postServer": "https://192.168.1.55:10101/api/WCCTranslator",
-    "documentDirectory": "../src/test/resources/testDocs"
-  }
-}

@@ -1,13 +1,13 @@
 {
-  "resources":{
-    "outputQueues":["ackQueue"]
+  "DEFSettings": {
   },
-  "properties": {
-    "acknowledgeQueue": "ackQueue",
+  "pluginSettings": {
     "pendingCache": "pendingCache",
-    "queueMapping": {     
-      "filterQueue_1": [
-	   "financial",
+    "ackCache": "ackCache",
+    "ackCacheFolder": "primary",
+    "queueMapping": {
+      "processor1": [
+        "financial",
         "qbe",
         "others",
         "medical",

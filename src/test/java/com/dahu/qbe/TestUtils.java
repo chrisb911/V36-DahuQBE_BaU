@@ -90,16 +90,19 @@ public class TestUtils {
 
     }
 
-    public static Process startTestServer(String _configDir, String _configFile){
+    public static Process startTestServer(String _configDir, String _configFile,String _workingDir){
 
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
+        String workDir = System.getProperty("user.dir");
 
         // note - relies on the fact we have an ant-run task to create a non-versioned jar file
-        System.out.println("server startup command is: 'java -jar -Djava.library.path=./native/mac-x86_64 ./lib/DahuDEFServer.jar -cdir " +  _configDir +  " -c " + _configFile + " -console'");
-
-        ProcessBuilder   ps=new ProcessBuilder("java", "-Djava.library.path=../lib/" +
-                "native/mac-x86_64", "-jar", "./lib/DahuDEFServer.jar", "-cdir", _configDir, "-c", _configFile, "-console");
-        ps.directory(new File("../target"));
+        System.out.println("server startup command is: '/usr/bin/java -jar -Djava.library.path=../lib/native/mac-x86_64 ../lib/DahuDEFServer.jar -cdir " +  _configDir +  " -c " + _configFile + " -console'");
+        ProcessBuilder   ps=new ProcessBuilder("/usr/bin/java", "-jar", "-Djava.library.path=../lib/native/mac-x86_64", "../lib/DahuDEFServer.jar", "-cdir", _configDir, "-c", _configFile, "-console");
+        File target = new File(workDir  + File.separator + _workingDir);
+        System.out.println("Working directory for server: " + target.getAbsolutePath());
+        
+        target.mkdir();
+        ps.directory(target);
 
         Process pr;
         try {

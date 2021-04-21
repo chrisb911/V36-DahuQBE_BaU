@@ -1,0 +1,12 @@
+{
+  "DEFSettings":{
+    "outputQueues":["processorQueue"],
+    "runAtStartup":"false"
+  },
+  "pluginSettings":{
+    "interval":"5000",
+    "logLevel":"WARN",
+    "remoteCache":"../receiver/pendingCache/processor1",
+    "localCache":"localPendingCache"
+  }
+}

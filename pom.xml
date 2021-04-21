@@ -404,6 +404,11 @@ them and make sure they are the correct versions -->
                                     </fileset>
                                     <mapper type="regexp" from="^(.+?)-[0-9]+.*\.jar$" to="\1.tests.jar" />
                                 </copy>
+                                <copy todir="${project.build.directory}/lib/native">
+                                    <fileset dir="${basedir}/src/main/natives">
+                                        <include name="**" />
+                                    </fileset>
+                                </copy>
                                 <copy todir="${project.build.directory}">
                                     <fileset dir="${project.build.directory}">
                                         <include name="${project.artifactId}-${project.version}.jar" />
@@ -445,16 +450,6 @@ them and make sure they are the correct versions -->
                                         <include name="${project.artifactId}*.jar" />
                                     </fileset>
                                     <mapper type="regexp" from="^(.+?)-[0-9]+.*\.jar$" to="\1.jar" />
-                                </copy>
-                                <copy todir="${basedir}/run/config">
-                                    <fileset dir="${basedir}/src/main/resources/config">
-                                        <include name="**" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="${project.build.directory}/config">
-                                    <fileset dir="${basedir}/src/main/resources/config">
-                                        <include name="**" />
-                                    </fileset>
                                 </copy>
                                 <copy todir="${basedir}/run/providedConfigs">
                                     <fileset dir="${basedir}/src/main/resources/providedConfigs">
