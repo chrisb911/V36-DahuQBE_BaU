@@ -25,14 +25,14 @@
     {
       "name": "pendingCache",
       "type": "directoryCount",
-      "resource": "D:/DEFSHARE/docCache",
+      "resource": "D:\\DEFSHARE\\docCache",
       "label": "Pending cache"
     },
     {
-      "name": "dailyExport-current",
-      "type": "directoryCount",
-      "resource": "D:/daily-export/current",
-      "label": "Daily export"
+      "name": "dailyExport",
+      "type": "fileContentCount",
+      "resource": "D:\\daily-export\\current",
+      "label": "none"
     }
   ],
   "services":[

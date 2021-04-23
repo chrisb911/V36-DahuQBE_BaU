@@ -21,14 +21,14 @@
     {
       "name": "pendingCache",
       "type": "directoryCount",
-      "resource": "D:/DEFSHARE/docCache",
+      "resource": "D:\\DEFSHARE\\docCache",
       "label": "Pending cache"
     },
     {
       "name": "dailyExport",
-      "type": "directoryCount",
-      "resource": "D:/3-6-df-daily-export/current",
-      "label": "Daily export"
+      "type": "fileContentCount",
+      "resource": "D:\\daily-export\\current",
+      "label": "none"
     }
   ],
   "services":[
@@ -36,7 +36,7 @@
       "name":"Vector",
       "class":"com.dahu.vector.core.VectorService",
       "settingsFile":"dahuVector_settings.json",
-      "threads":"16"
+      "threads":"1"
     }
 
   ],

@@ -26,9 +26,9 @@
     },
     {
       "name": "dailyExport",
-      "type": "directoryCount",
+      "type": "fileContentCount",
       "resource": "df-daily-export/current",
-      "label": "Daily export"
+      "label": "none"
     }
   ],
   "services":[
