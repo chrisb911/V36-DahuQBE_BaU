@@ -27,7 +27,7 @@
     {
       "name": "dailyExport",
       "type": "fileContentCount",
-      "resource": "df-daily-export/current",
+      "resource": "dailyExport",
       "label": "none"
     }
   ],

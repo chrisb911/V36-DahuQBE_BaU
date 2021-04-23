@@ -31,7 +31,7 @@
     {
       "name": "dailyExport",
       "type": "fileContentCount",
-      "resource": "D:\\daily-export\\current",
+      "resource": "D:\\df-daily-export\\current",
       "label": "none"
     }
   ],
