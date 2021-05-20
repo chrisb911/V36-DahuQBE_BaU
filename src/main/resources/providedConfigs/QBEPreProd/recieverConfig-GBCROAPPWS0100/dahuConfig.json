@@ -19,7 +19,7 @@
   "securityTokenTTL":"14600",
   "DEFPermitsFile": "DEFPermitMap.json",
   "keystorePath": "QBEKeystore.jks",
-  "KeystorePassword": {
+  "keystorePassword": {
     "type": "encrypted","values": "SIV5/lgf0EPdCfhJ8dnDmA=="
   },
   "metrics": [
@@ -73,9 +73,9 @@
   ],
   "commands":[
     {
-      "name": "WCCReceiver",
+      "name": "WCCTranslator",
       "jar": "DahuQBEbau.jar",
-      "class": "com.dahu.qbe.commands.WCCReceiver",
+      "class": "com.dahu.qbe.commands.WCCTranslator",
       "settingsFile": "WCCReceiver_settings.json"
     }
   ],

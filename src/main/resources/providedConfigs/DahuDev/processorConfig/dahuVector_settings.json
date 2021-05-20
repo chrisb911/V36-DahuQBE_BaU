@@ -28,10 +28,6 @@
         "zipPrefix" : "GBSLOAPPWP0080",
         "zipPassword":"dahu4ever",
         "dropFolder":"current"
-      },
-      "DEFCleanAndAcknowledge":{
-        "ackCache": "/Users/chrisbartlett/Development/QBE/3-6BaU/DahuQBEbau/rec-run/ackCache",
-        "ackCacheFolder": "ackCache-82"
       }
     }
   }

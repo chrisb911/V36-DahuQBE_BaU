@@ -1,6 +1,6 @@
 {
   "logLevel":"DEBUG",
-  "name":"DEF-PES Processor",
+  "name":"DEF-PES Processor 103",
   "threads":"40",
   "admin":"true",
   "adminUI":"true",
@@ -18,7 +18,7 @@
   "securityTokenTTL":"14600",
   "DEFPermitsFile": "DEFPermitMap.json",
   "keystorePath": "QBEKeystore.jks",
-  "KeystorePassword": {
+  "keystorePassword": {
     "type": "encrypted","values": "vcLekrECEheug0s91mmveQ=="
   },
   "metrics": [

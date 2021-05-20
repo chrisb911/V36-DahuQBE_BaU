@@ -19,7 +19,7 @@
   "securityTokenTTL":"14600",
   "DEFPermitsFile": "DEFPermitMap.json",
   "keystorePath": "QBEKeystore.jks",
-  "KeystorePassword": {
+  "keystorePassword": {
     "type": "encrypted","values": "KVqFdMfxOi/ScrlypunB7g=="
   },
   "metrics": [
