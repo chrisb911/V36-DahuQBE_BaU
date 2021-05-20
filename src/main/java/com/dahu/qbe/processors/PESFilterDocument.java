@@ -81,6 +81,8 @@ public class PESFilterDocument extends AbstractProcessor {
     private static final String OUTPUTFORMAT_LDHTML = "ld_html";
     private static final String OUTPUTFORMAT_TEXT_ONLY = "text";
 
+    private static String OCR_FLAGS;
+
 
     public PESFilterDocument(Level _level, Component _component)   {
         super(_level, _component);
@@ -100,7 +102,9 @@ public class PESFilterDocument extends AbstractProcessor {
         statusLogger = DEFLogManager.getLogger("DahuQBE-BAU",Level.INFO);
 
         if (this.getPropertyValue(CONFIG_OCR,"").equalsIgnoreCase("true") || this.getPropertyValue(CONFIG_OCR,"").equalsIgnoreCase("on")){
-            ocr=true;
+            OCR_FLAGS = "OCR=ON;OCR_MIN_WIDTH=400";
+        } else {
+            OCR_FLAGS = "OCR=OFF";
         }
 
         if (rootOutputFolder == null || license == null || outputformat == null ||
@@ -301,9 +305,9 @@ public class PESFilterDocument extends AbstractProcessor {
         logger.trace(Thread.currentThread().getId() + " : Enter recurseTextOnly : processing " + _filename + " storing output files in " + _folder);
 
         int flags = isys_docfilters.IGR_BODY_AND_META | isys_docfilters.IGR_FORMAT_HTML;
-        String OCR_ON = (ocr) ? "OCR=ON" : "OCR=OFF";
+
         try {
-            _item.Open(flags, OCR_ON);
+            _item.Open(flags, OCR_FLAGS);
         } catch (IGRException igre){
             logger.warn(Thread.currentThread().getId() + " : Unable to open document, " + _filename + " :" + igre.getLocalizedMessage());
             igre.printStackTrace();
@@ -383,11 +387,10 @@ public class PESFilterDocument extends AbstractProcessor {
 
             // Open the file for conversion to image-based Hi-Def HTML
             int flags = isys_docfilters.IGR_BODY_AND_META | isys_docfilters.IGR_FORMAT_IMAGE;
-            // include ORC?
-            String OCR_ON = (ocr) ? "OCR=ON" : "OCR=OFF";
+
             try {
                 // open file - inject all of the custom metadata that comes with the iDoc
-                _item.Open(flags, OCR_ON+";HDHTML_OUTPUT_INJECT_HEAD="+_metasAsString);
+                _item.Open(flags, OCR_FLAGS+";HDHTML_OUTPUT_INJECT_HEAD="+_metasAsString);
             } catch (IGRException igre){
                 igre.printStackTrace();
                 logger.warn(Thread.currentThread().getId() + " : Unable to open document, " + _filename + " :" + igre.getLocalizedMessage());
@@ -501,12 +504,7 @@ public class PESFilterDocument extends AbstractProcessor {
             String finalImageUrl = imageurl+"/"+folderUrlPath + "/";
 
 
-            String options = null;
-            if (ocr){
-                options = "OCR=ON";
-            } else {
-                options = "OCR=OFF";
-            }
+            String options = OCR_FLAGS;
             if (null != imageurl){
                 options = options + ";IMAGEURL=" + finalImageUrl ;
             }
@@ -625,7 +623,6 @@ public class PESFilterDocument extends AbstractProcessor {
                         // if it is zero size, do not recurse it
                         // If it is a common image file format and is very small, it's unlikely to contain useful text so also choose to not recurse
                         if ((  ! ( child.getFileType() == 73 || child.getFileType() == 72 || child.getFileType() == 118 || child.getFileType() == 121
-//                        if (child.getFileSize() > 20000 ||  ( child.getFileSize() > 0 &&  ! ( child.getFileType() == 73 || child.getFileType() == 72 || child.getFileType() == 118 || child.getFileType() == 121
                                 || child.getFileType() == 122 || child.getFileType() == 123 || child.getFileType() == 124 || child.getFileType() == 125
                                 || child.getFileType() == 126))){
                             logger.debug(Thread.currentThread().getId() + " : Processing " + _filename + " : sending child, " + _filename + " -_ " + child.getName() + " sending to recurseLoDefHtml() as " + _filename + "_" + subFileCount);
