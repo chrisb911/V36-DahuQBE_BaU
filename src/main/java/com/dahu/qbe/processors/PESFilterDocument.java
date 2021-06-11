@@ -74,7 +74,7 @@ public class PESFilterDocument extends AbstractProcessor {
     private static final String OUTPUTFORMAT_LDHTML = "ld_html";
     private static final String OUTPUTFORMAT_TEXT_ONLY = "text";
 
-    private static String OCR_FLAGS;
+    private static String OCR_FLAGS = "OCR=ON;OCR_MIN_WIDTH=400";
 
 
     public PESFilterDocument(Level _level, Component _component)   {
@@ -94,11 +94,11 @@ public class PESFilterDocument extends AbstractProcessor {
 
         statusLogger = DEFLogManager.getLogger("DahuQBE-BAU",Level.INFO);
 
-        if (this.getPropertyValue(CONFIG_OCR,"").equalsIgnoreCase("true") || this.getPropertyValue(CONFIG_OCR,"").equalsIgnoreCase("on")){
-            OCR_FLAGS = "OCR=ON;OCR_MIN_WIDTH=400";
-        } else {
-            OCR_FLAGS = "OCR=OFF";
-        }
+//        if (this.getPropertyValue(CONFIG_OCR,"").equalsIgnoreCase("true") || this.getPropertyValue(CONFIG_OCR,"").equalsIgnoreCase("on")){
+//            OCR_FLAGS = "OCR=ON;OCR_MIN_WIDTH=400";
+//        } else {
+//            OCR_FLAGS = "OCR=OFF";
+//        }
 
         if (rootOutputFolder == null || license == null || outputformat == null ||
                 (! (outputformat.equalsIgnoreCase(OUTPUTFORMAT_HDHTML)||
@@ -477,7 +477,7 @@ public class PESFilterDocument extends AbstractProcessor {
      */
     private void recurseLoDefHtml(String _folder, String _filename, Extractor _item, String _metas){
 
-        logger.trace(Thread.currentThread().getId() + " : Enter recurseLoDefHtmlFile : processing " + _filename + " storing output files in " + _folder);
+        logger.debug(Thread.currentThread().getId() + " : Enter recurseLoDefHtmlFile : processing " + _filename + " storing output files in " + _folder);
 
         if (_item != null){
 
@@ -521,7 +521,7 @@ public class PESFilterDocument extends AbstractProcessor {
 
             try
             {
-                logger.trace("See if this document, " + _filename + " supports text extraction");
+                logger.debug("See if this document, " + _filename + " supports text extraction");
                 if (_item.getSupportsText()) {
                     logger.debug("Extracting text as HTML for document, " + _filename);
                     // Extract the text and write to exported HTML file
@@ -540,6 +540,7 @@ public class PESFilterDocument extends AbstractProcessor {
                             }
                         }
 
+                        logger.trace("Appending text => " + t);
                         htmlContent.append(t);
                     }
 
