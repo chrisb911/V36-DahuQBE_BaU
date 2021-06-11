@@ -66,7 +66,7 @@ public class PESFilterDocument extends AbstractProcessor {
     private String outputformat = null;
     private String rootOutputFolder = null;
     private String license = null;
-    private boolean ocr = false;
+//    private boolean ocr = true;
     private String imageurl = null;
     private int folderDepth; // default to 4
 
@@ -112,6 +112,7 @@ public class PESFilterDocument extends AbstractProcessor {
         // If root folder doesn't exist, create it
         new File(rootOutputFolder).mkdir();
 
+        logger.debug("Initialising DocFilters  ; License => " + license);
         try {
             isys = new DocumentFilters();
             isys.Initialize(license, ".");
@@ -120,7 +121,7 @@ public class PESFilterDocument extends AbstractProcessor {
             igre.printStackTrace();
             return false;
         }
-        logger.trace(Thread.currentThread().getId() + " : Finished initialising PESDocFilter : Output Folder = " + rootOutputFolder + " Format = " + outputformat + " OCR = " + ocr);
+        logger.trace(Thread.currentThread().getId() + " : Finished initialising PESDocFilter : Output Folder = " + rootOutputFolder + " Format = " + outputformat + " OCR = " + OCR_FLAGS);
 
 
         logger.debug("PESFilterDocument - root output folder: " + rootOutputFolder);
@@ -224,9 +225,8 @@ public class PESFilterDocument extends AbstractProcessor {
                 }
 
                 item = isys.GetExtractor(_iDoc.getData());
-                String OCR_ON = (ocr) ? "OCR=ON" : "OCR=OFF";
 
-                logger.debug(Thread.currentThread().getId() + " : Processing " + _iDoc.getId() + " through " + outputformat + " doc filters with " + OCR_ON + " write output to " + outputFolder);
+                logger.debug(Thread.currentThread().getId() + " : Processing " + _iDoc.getId() + " through " + outputformat + " doc filters with " + OCR_FLAGS + " write output to " + outputFolder);
 
                 if (outputformat.equalsIgnoreCase(OUTPUTFORMAT_LDHTML)) {
                     recurseLoDefHtml(outputFolder, _iDoc.getId(), item, sb.toString());
