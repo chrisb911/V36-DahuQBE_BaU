@@ -2,6 +2,7 @@ package com.dahu.qbe.processors;
 
 
 import com.dahu.core.abstractcomponent.AbstractProcessor;
+import com.dahu.core.exception.BadDocumentException;
 import com.dahu.core.exception.BadMetaException;
 import com.dahu.core.interfaces.iDocument;
 import com.dahu.def.exception.BadConfigurationException;
@@ -31,7 +32,7 @@ public class DEFLoadCachedDocument extends AbstractProcessor {
         try {
             filePath = iDocument.getFieldValue("filepath");
         } catch (BadMetaException e) {
-            logger.warn("failed to get value for 'filepath' from intermediate iDoc. " +e.getLocalizedMessage());
+            logger.warn("DEFLoadCachedDocument: failed to get value for 'filepath' from intermediate iDoc. " +e.getLocalizedMessage());
         }
         if (null != filePath) {
 
@@ -43,8 +44,9 @@ public class DEFLoadCachedDocument extends AbstractProcessor {
 
                 // Method for deserialization of object
                 doc = (iDocument) ois.readObject();
+                logger.debug("DEFLoadCachedDocument: deserialized original idoc: " +doc.getId());
             } catch (Exception e) {
-                logger.warn("Failed to deserialize idoc: " + e.getLocalizedMessage());
+                logger.warn("DEFLoadCachedDocument: Failed to deserialize idoc: " + e.getLocalizedMessage());
             }
             if (null != fis) {
                 try {
@@ -60,17 +62,36 @@ public class DEFLoadCachedDocument extends AbstractProcessor {
                     e.printStackTrace();
                 }
             }
+        } else {
+            logger.warn("DEFLoadCachedDocument: filepath field field not found in idoc for iDoc" + iDocument.getId());
         }
         if (null != doc) {
-            // add the filepatch back in so we can delete it from the local cache later
-            doc.addField("filePath",filePath);
+            // add the filepath back in so we can delete it from the local cache later
+            doc.addField("filePath", filePath);
+            logger.debug("DEFLoadCachedDocument: returning new iDoc with bytes for " + doc.getId());
+            byte[] testSize = new byte[0];
+            try {
+                testSize = doc.getData();
+                if (null != testSize)
+                    logger.debug("DEFLoadCachedDocument: iDoc content size is " + testSize.length);
+
+            } catch (BadDocumentException e) {
+                logger.warn("DEFLoadCachedDocument: unable to test size of deserialized content " + iDocument.getId() + ". " + filePath);
+            }
+
             return doc;
         }
-        else return iDocument;
+        else {
+            logger.warn("DEFLoadCachedDocument: failed to add bytes from cached file to iDoc. " + filePath);
+            return iDocument;
+        }
     }
 
     @Override
     public boolean initialiseMe() throws BadConfigurationException {
+
+        logger.debug("DEFLoadCachedDocument - initializing ");
+
         return true;
     }
 }

@@ -168,6 +168,15 @@ public class PESFilterDocument extends AbstractProcessor {
         if (action.equalsIgnoreCase("insert")) {
 
             if (_iDoc == null || _iDoc.getId() == null || _iDoc.getDataSize() == 0) {
+                if (_iDoc == null){
+                    logger.warn("PES Filter document: iDoc is null. did the get bytes get read?" );
+                }
+                if (null != _iDoc && _iDoc .getId() == null){
+                    logger.warn("PES Filter document: iDoc exists but iDoc ID is null. ");
+                }
+                if (null != _iDoc && _iDoc.getDataSize() == 0){
+                    logger.warn("PES Filter document: iDoc data is zero bytes -  did bytes get read? " + _iDoc.getId());
+                }
                 statusLogger.warn(String.format("PES Filter document: Failed to process doc %s for addition",_iDoc.getId()));
                 logger.debug(Thread.currentThread().getId() + " : Unable to pass this document to doc filters - " + _iDoc.getId() + " data size is " + _iDoc.getDataSize());
                 _iDoc.addField("SYNC","false");

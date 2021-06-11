@@ -6,7 +6,7 @@
   "pluginSettings":{
     "interval":"30000",
     "logLevel":"WARN",
-    "remoteCache":"/Users/chrisbartlett/Development/QBE/3-6BaU/DahuQBEbau/rec-run/pendingCache/filterCache_82",
+    "remoteCache":"/Users/chrisbartlett/Development/CLIENT-3.6/qbe-dahubau/rec-run/pendingCache/filterCache_82",
     "localCache":"localPendingCache"
   }
 }

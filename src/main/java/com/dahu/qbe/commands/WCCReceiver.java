@@ -25,6 +25,8 @@ package com.dahu.qbe.commands;
         import java.util.*;
         import java.security.NoSuchAlgorithmException;
         import java.text.ParseException;
+        import java.util.stream.Collectors;
+        import javax.servlet.http.HttpServletRequest;
         import javax.ws.rs.BadRequestException;
         import javax.xml.bind.JAXBException;
         import javax.xml.transform.TransformerException;
@@ -255,12 +257,43 @@ public class WCCReceiver extends CommandPluginBase {
                 InputStream is = _context.getQueryRequest().getRequest().getInputStream();
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                 int nRead;
+                int written = 0;
                 byte[] data = new byte[1024];
                 while ((nRead = is.read(data, 0, data.length)) != -1) {
                     buffer.write(data, 0, nRead);
+                    written = written + nRead;
                 }
                 buffer.flush();
+                logger.debug(String.format("Writing %d bytes  to %s", written, filename));
                 doc.setData(buffer.toByteArray());
+
+                // dump out the request for debugging
+                if (logger.isDebugEnabled()) {
+                    HttpServletRequest req = _context.getQueryRequest().getRequest();
+                    logger.trace("APIServlet - request: " + req.getRequestURL());
+                    logger.trace("APIServlet - request method: " + req.getMethod());
+                    Enumeration<String> params = req.getParameterNames();
+                    while (params.hasMoreElements()) {
+                        String paramName = params.nextElement();
+                        logger.debug("APIServlet -Parameter Name - " + paramName + ", Value - " + req.getParameter(paramName));
+                    }
+                    Enumeration<String> headerNames = req.getHeaderNames();
+                    while (headerNames.hasMoreElements()) {
+                        String headerName = headerNames.nextElement();
+                        logger.debug("APIServlet - Header Name - " + headerName + ", Value - " + req.getHeader(headerName));
+                    }
+
+                    // dump the request body if post
+                    if ("POST".equalsIgnoreCase(req.getMethod())) {
+                        logger.debug("APIServlet - post body size: " + buffer.size());
+                        if (buffer.size() > 0) {
+                            String shortBody = buffer.toString().substring(0, Math.min(buffer.size(), 1000));
+
+                            logger.debug("APIServlet - post body data (first 1000): " + shortBody + "...");
+
+                        }
+                    }
+                }
             }
 
 
