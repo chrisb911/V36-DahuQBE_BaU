@@ -1,32 +1,25 @@
 package com.dahu.qbe.processors;
 
 
-        import com.dahu.core.abstractcomponent.AbstractProcessor;
-        import com.dahu.core.exception.BadDocumentException;
-        import com.dahu.core.exception.BadMetaException;
-        import com.dahu.core.interfaces.iDocument;
-        import com.dahu.core.logging.DEFLogManager;
+import com.dahu.core.abstractcomponent.AbstractProcessor;
+import com.dahu.core.exception.BadDocumentException;
+import com.dahu.core.exception.BadMetaException;
+import com.dahu.core.interfaces.iDocument;
+import com.dahu.core.logging.DEFLogManager;
+import com.dahu.def.exception.BadArgumentException;
+import com.dahu.def.exception.BadConfigurationException;
+import com.dahu.def.types.Component;
+import com.dahu.qbe.utils.fileSharder;
+import com.perceptive.documentfilters.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
-        import com.dahu.def.exception.BadArgumentException;
-        import com.dahu.def.exception.BadConfigurationException;
-        import com.dahu.def.types.Component;
-        import com.dahu.qbe.utils.fileSharder;
-        import org.apache.commons.io.FileUtils;
-        import org.apache.logging.log4j.Level;
-        import com.perceptive.documentfilters.*;
-        import org.apache.logging.log4j.Logger;
-
-
-        import java.io.*;
-        import java.net.InetAddress;
-        import java.nio.file.Files;
-        import java.nio.file.Path;
-        import java.nio.file.Paths;
-        import java.text.SimpleDateFormat;
-        import java.util.Date;
-        import java.util.HashSet;
-        import java.util.Map;
-        import java.util.Set;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Set;
 
 /**
  *
