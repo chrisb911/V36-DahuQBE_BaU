@@ -9,10 +9,13 @@ them and make sure they are the correct versions -->
     <!-- You need to pull the correct version of DEFServer into a directory called 'DEFServer' at the same
     level as this module. Please make sure you pull the correct version if you are re-building this kit  -->
     <properties>
-        <DahuDEFServer.version>3.6.11</DahuDEFServer.version>
-        <DahuVector.version>3.6.0</DahuVector.version>
-        <DahuEdge.version>3.6.0</DahuEdge.version>
-		<DahuAdminUI.version>3.6.1</DahuAdminUI.version>
+        <DahuDEFServer.version>3.6.25</DahuDEFServer.version>
+        <DahuVector.version>3.6.3</DahuVector.version>
+        <DahuEdge.version>3.6.5</DahuEdge.version>
+		<DahuAdminUI.version>3.6.4</DahuAdminUI.version>
+        <DahuSearchUI.version>3.6.15</DahuSearchUI.version>
+        <DahuCommon.version>3.6.6</DahuCommon.version>
+        <DahuSurface.version>3.6.10</DahuSurface.version>
         <log4j.version>2.13.3</log4j.version>
     </properties>
     <scm>
@@ -234,6 +237,66 @@ them and make sure they are the correct versions -->
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-surface</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuSurface</artifactId>
+                                    <version>${DahuSurface.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <type>jar</type>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-edge</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuEdge</artifactId>
+                                    <version>${DahuEdge.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <type>jar</type>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-common</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <stripVersion>true</stripVersion>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.dahu</groupId>
+                                    <artifactId>DahuCommon</artifactId>
+                                    <version>${DahuCommon.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <type>jar</type>
+                                    <outputDirectory>${basedir}/run/lib</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-DEFServer</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -371,6 +434,9 @@ them and make sure they are the correct versions -->
 								<mkdir dir="${basedir}/run/adminRoot" />
 								<mkdir dir="${basedir}/run/adminRoot/images" />
 								<mkdir dir="${basedir}/run/adminRoot/images/themeImages" />
+                                <mkdir dir="${basedir}/run/docRoot" />
+                                <mkdir dir="${basedir}/run/docRoot/images" />
+                                <mkdir dir="${basedir}/run/docRoot/images/themeImages" />
                             </tasks>
                         </configuration>
                         <goals>
@@ -509,6 +575,14 @@ them and make sure they are the correct versions -->
                                         <include name="*.js" />
                                     </fileset>
 								</copy>
+                                <copy todir="${basedir}/run/docRoot">
+                                    <fileset dir="${project.build.directory}/dependency/DahuSearchUI-${DahuSearchUI.version}/docRoot">
+                                        <include name="**" />
+                                    </fileset>
+                                    <fileset dir="${basedir}/src/main/resources/docRoot">
+                                        <include name="*.js" />
+                                    </fileset>
+                                </copy>
 
                                 <chmod perm="755">
                                     <fileset dir="${basedir}/run/tools">
@@ -566,6 +640,28 @@ them and make sure they are the correct versions -->
             <artifactId>DahuEdge</artifactId>
             <version>${DahuEdge.version}</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuSurface</artifactId>
+            <version>${DahuSurface.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuCommon</artifactId>
+            <version>${DahuCommon.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dahu</groupId>
+            <artifactId>DahuSearchUI</artifactId>
+            <version>${DahuSearchUI.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.dahu</groupId>
