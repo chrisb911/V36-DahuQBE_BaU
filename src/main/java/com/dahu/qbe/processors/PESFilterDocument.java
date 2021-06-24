@@ -136,7 +136,7 @@ public class PESFilterDocument extends AbstractProcessor {
 
         // get the document from local cache that is pointed to by this message
 
-
+        logger.debug("PESFilterDocument - process. V3.6.2-c-SNAPSHOT ");
         String action = _iDoc.getAction();
         if (null == action || !(action.equalsIgnoreCase("insert") || action.equalsIgnoreCase("delete"))){
             logger.warn("no action provided (should be either 'add' or 'delete')");
