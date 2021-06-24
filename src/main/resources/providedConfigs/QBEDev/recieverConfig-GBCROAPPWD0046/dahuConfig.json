@@ -43,7 +43,7 @@
   ],
   "commands":[
     {
-      "name": "WCCReceiver",
+      "name": "WCCTranslator",
       "jar": "DahuQBEbau.jar",
       "class": "com.dahu.qbe.commands.WCCReceiver",
       "settingsFile": "WCCReceiver_settings.json"

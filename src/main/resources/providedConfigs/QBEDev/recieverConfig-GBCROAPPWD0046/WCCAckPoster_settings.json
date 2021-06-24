@@ -7,12 +7,12 @@
     "logLevel":"WARN",
     "ackCache":"D:/DEFSHARE/ackCache",
     "username":"weblogic",
-    "password":"none",
-    "server":"GBCROSQLWD0047.corp.qbe.com",
-    "port":"10101",
+    "password":"qbe4wlsdev",
+    "server":"10.22.70.132",
+    "port":"16200",
     "protocol":"http",
-    "certPath":"QBEKeystore.jks",
-    "urlBase":"api/cs",
-    "batchSize":"10"
+    "certPath":"Keystore.jks",
+    "urlBase":"cs",
+    "batchSize":"20"
   }
 }
