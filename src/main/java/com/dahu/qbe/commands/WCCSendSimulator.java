@@ -26,15 +26,21 @@ package com.dahu.qbe.commands;
         import org.apache.http.ssl.SSLContextBuilder;
         import org.apache.http.util.EntityUtils;
         import org.apache.logging.log4j.Level;
-        import javax.net.ssl.SSLContext;
+
+        import javax.net.ssl.*;
         import javax.xml.bind.JAXBException;
         import javax.xml.transform.TransformerException;
         import java.io.*;
+        import java.net.HttpURLConnection;
+        import java.net.URL;
+        import java.security.KeyManagementException;
         import java.security.NoSuchAlgorithmException;
+        import java.security.cert.CertificateException;
+        import java.security.cert.X509Certificate;
+        import java.text.DateFormat;
+        import java.text.SimpleDateFormat;
         import java.util.*;
         import static java.lang.String.format;
-
-
 
 
 public class WCCSendSimulator extends CommandPluginBase {
@@ -135,7 +141,7 @@ public class WCCSendSimulator extends CommandPluginBase {
 
             metasMap.put("meta"+metaCount,"documentName="+ filename);
 
-            pushDocument(serverAddress , action, filename, date, index, metasMap, fileData);
+            pushDocument2(serverAddress , action, filename, date, index, metasMap, fileData);
 
 
             retResponse.put("FakeWCCSendCommand", "id=" + id);
@@ -175,6 +181,147 @@ public class WCCSendSimulator extends CommandPluginBase {
             }
         }
         return buffer;
+    }
+
+    private HttpURLConnection getConnection(String _server) {
+        HttpURLConnection con = null;
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+                            throws CertificateException {}
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+                            throws CertificateException {}
+
+                }
+        };
+
+        SSLContext sc=null;
+        try {
+            sc = SSLContext.getInstance("SSL");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+            public boolean verify(String string, SSLSession sslSession) {
+                return true;
+            }
+        });
+        try {
+            URL url = new URL(_server);
+            con = (HttpsURLConnection) url.openConnection();
+            con.setAllowUserInteraction(false);
+            return con;
+        } catch (Exception e){
+            logger.warn("problem getting connection: " + e.getLocalizedMessage());
+            logger.warn(e);
+        }   finally {
+            if (con != null){
+                con.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+    private int pushDocument2(String _server, String _action, String _filename, String _date, String _indexName, Map<String, String> _metas, byte[] _data) {
+
+        HttpURLConnection con = null;
+        int length = 0;
+        try {
+            con = getConnection(_server);
+            con.addRequestProperty("action",_action);
+            con.addRequestProperty("index",_indexName);
+            con.addRequestProperty("filename",_filename);
+            TimeZone tz = TimeZone.getTimeZone("UTC");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+            df.setTimeZone(tz);
+
+            // SHOULD THIS BE A LAST-MODIFIED DATE FROM THE DOC? We are sending the Index date instead
+            con.addRequestProperty("last-modified", df.format(new Date()));
+            con.addRequestProperty("password", "???");
+
+            con.addRequestProperty("meta1", "indexname="+_filename);
+
+            // add some  metadata
+            int count = 1;
+
+            for (String DEFMetaName : _metas.keySet()) {
+                String DEFMetaValue = _metas.get(DEFMetaName);
+                con.addRequestProperty(DEFMetaName,DEFMetaValue);
+                count++;
+            }
+            con.setDoInput(true);
+            con.setDoOutput(true);
+
+            if (null == _data || _data.length >102400000){
+                logger.warn("data missing or too large");
+                String keyName = "meta"+String.valueOf(count);
+                String value = "indexedContent=false";
+                con.addRequestProperty(keyName,value);
+
+                //set the size
+                String payload = "filename:"+_filename + "\n";
+                length = payload.length();
+                con.setRequestProperty("Content-Length",""+length);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                wr.writeBytes(payload);
+                wr.flush();
+                wr.close();
+            } else {
+                logger.debug("adding data...");
+                String keyName = "meta" + String.valueOf(count);
+                String value = "indexedContent=true";
+                con.addRequestProperty(keyName,value);
+                length = _data.length;
+                logger.debug("Key : "+keyName+"  file data length: "+ length);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+
+                wr.write(_data,0,length);
+                wr.flush ();
+                wr.close ();
+
+            }
+        } catch(Exception e){
+            logger.warn("failed to post message: " + e.getLocalizedMessage());
+            logger.warn(e);
+        } finally {
+            if (null != con){
+                con.disconnect();
+            }
+        }
+        try {
+            int code = 0;
+            try {
+                code = con.getResponseCode();
+            } catch(IOException ioe){
+                logger.debug("failed while getting response code: " + ioe.getLocalizedMessage());
+                logger.debug(ioe);
+            }
+            if (code != 200){
+
+                logger.debug("push failed - " + code);
+
+            } else {
+                logger.debug("push worked  - " + code);
+            }
+            return code;
+        } catch (Exception e){
+            logger.warn("something bad: " + e.getLocalizedMessage());
+            logger.warn(e);
+        }
+        return 500;
     }
 
     private int pushDocument(String _server, String _action, String _filename, String _date, String _indexName, Map<String, String> _metas, byte[] _data) {
