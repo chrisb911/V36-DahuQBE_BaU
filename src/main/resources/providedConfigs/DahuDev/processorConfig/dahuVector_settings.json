@@ -28,6 +28,10 @@
         "zipPrefix" : "GBSLOAPPWP0080",
         "zipPassword":"dahu4ever",
         "dropFolder":"current"
+      },
+      "DEFCleanAndAcknowledge":{
+        "ackCache": "DEFSHARE-R/ackCache",
+        "ackCacheFolder": "GBCROAPPWD0048"
       }
     }
   }

@@ -82,6 +82,11 @@ public class PESFilterDocument extends AbstractProcessor {
     }
 
     @Override
+    public boolean supportsDelete() {
+        return true;
+    }
+
+    @Override
     public boolean initialiseMe() throws BadConfigurationException {
 
 
