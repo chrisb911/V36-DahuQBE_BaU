@@ -12,6 +12,8 @@
   "plugins":"./lib",
   "crossOrigin":"true",
   "responseVersion":"2",
+  "keystorePath":"./QBEKeystore.jks",
+  "keystorePassword": "Dahu4ever",
   "securityTokenTTL":"14600",
   "DEFPermitsFile": "DEFPermitMap.json",
 

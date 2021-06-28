@@ -18,10 +18,8 @@
   "responseVersion":"2",
   "securityTokenTTL":"14600",
   "DEFPermitsFile": "DEFPermitMap.json",
-  "keystorePath": "QBEKeystore.jks",
-  "keystorePassword": {
-    "type": "encrypted","values": "SIV5/lgf0EPdCfhJ8dnDmA=="
-  },
+  "keystorePath":"./QBEKeystore.jks",
+  "keystorePassword": "Dahu4ever",
   "metrics": [
     {
       "name": "ackCache-100",
