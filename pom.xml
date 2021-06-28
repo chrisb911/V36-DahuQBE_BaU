@@ -27,7 +27,7 @@ them and make sure they are the correct versions -->
     <groupId>com.dahu</groupId>
     <artifactId>DahuQBEbau</artifactId>
     <name>Dahu QBE B.A.U</name>
-    <version>3.6.4</version>
+    <version>3.6.5</version>
     <packaging>jar</packaging>
     <distributionManagement>
         <repository>
