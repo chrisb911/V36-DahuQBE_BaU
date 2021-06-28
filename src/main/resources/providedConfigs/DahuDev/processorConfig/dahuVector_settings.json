@@ -30,7 +30,7 @@
         "dropFolder":"current"
       },
       "DEFCleanAndAcknowledge":{
-        "ackCache": "DEFSHARE-R/ackCache",
+        "ackCache": "DEFSHARE/ackCache",
         "ackCacheFolder": "GBCROAPPWD0048"
       }
     }
