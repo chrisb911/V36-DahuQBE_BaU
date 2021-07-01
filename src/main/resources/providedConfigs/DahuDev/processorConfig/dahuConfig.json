@@ -25,7 +25,7 @@
       "label": "Local Pending cache"
     },
     {
-      "name": "dailyExport",
+      "name": "df-daily-export/current",
       "type": "fileContentCount",
       "resource": "dailyExport",
       "label": "none"
