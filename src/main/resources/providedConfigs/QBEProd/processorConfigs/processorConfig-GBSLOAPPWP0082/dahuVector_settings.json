@@ -13,7 +13,7 @@
       "PESFilterDocument":{
         "priority":"2",
         "outputFormat": "ld_html",
-        "outputFolder": "df-export",
+        "outputFolder": "D:\\df-export",
         "license": "NQMZ9 GAJM9 FNXFG 65V73 QGWZX XM7QU",
         "ocr": "on",
         "folderDepth": "3",
@@ -22,8 +22,8 @@
       },
       "DEFCopyToDailyCache":{
         "priority":"3",
-        "inputFolder": "D:df-export",
-        "outputFolder": "D:/df-daily-export",
+        "inputFolder": "D:\\df-export",
+        "outputFolder": "D:\\df-daily-export",
         "folderDepth": "3",
         "zipPrefix" : "GBSLOAPPWP0082",
         "zipPassword":{"type": "encrypted","values": "uonhMZ31UDuE0vbxBVgchA=="},
