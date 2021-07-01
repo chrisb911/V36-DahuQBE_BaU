@@ -52,6 +52,11 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
     }
 
     @Override
+    public boolean supportsDelete() {
+        return true;
+    }
+
+    @Override
     public boolean initialiseMe() throws BadConfigurationException {
         rootInputFolder = getPropertyValue(CONFIG_INPUTFOLDER, null);
         rootOutputFolder = getPropertyValue(CONFIG_OUTPUTFOLDER, null);

@@ -76,6 +76,9 @@ public class WCCSendSimulator extends CommandPluginBase {
             //id represents a doc we are going to post. docs will be in the docDir specified in the config
 
             String docDir = PluginConfig.getPluginProperties(_pluginContext.getCommand().getName()).getPropertyByName("documentDirectory");
+            String randAdd = PluginConfig.getPluginProperties(_pluginContext.getCommand().getName()).getPropertyByName("randomiseAdds");
+            String randDelete = PluginConfig.getPluginProperties(_pluginContext.getCommand().getName()).getPropertyByName("randomiseDeletes");
+
             String serverAddress = PluginConfig.getPluginProperties(_pluginContext.getCommand().getName()).getPropertyByName("postServer");
 
 
@@ -119,6 +122,7 @@ public class WCCSendSimulator extends CommandPluginBase {
                 logger.warn("failed to find the metadata file '" + docDir + File.separator + id + ".meta" + "'" );
             }
 
+
             // get the data
             byte[] fileData = null;
             File file = new File(docDir + File.separator + filename);
@@ -128,17 +132,20 @@ public class WCCSendSimulator extends CommandPluginBase {
                 // file might not be there - but that's ok
             }
 
-// randomise the key and the index
-            Random random = new Random();
-            int rand = 0;
-            while (true){
-                rand = random.nextInt(10001);
-                if(rand !=0) break;
+            if (
+                    (action.equalsIgnoreCase("add") && null != randAdd && randAdd.equalsIgnoreCase("true")) ||
+                    (action.equalsIgnoreCase("delete") && null != randDelete && randDelete.equalsIgnoreCase("true"))
+            ) {
+                Random random = new Random();
+                int rand = 0;
+                while (true) {
+                    rand = random.nextInt(10001);
+                    if (rand != 0) break;
+                }
+                rand = rand + 10000;
+
+                filename = String.format("%d", rand);
             }
-            rand = rand + 10000;
-
-            filename = String.format("%d",rand);
-
             metasMap.put("meta"+metaCount,"documentName="+ filename);
 
             pushDocument2(serverAddress , action, filename, date, index, metasMap, fileData);

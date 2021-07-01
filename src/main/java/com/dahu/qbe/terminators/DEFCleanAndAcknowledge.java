@@ -21,6 +21,11 @@ public class DEFCleanAndAcknowledge extends AbstractTerminator {
     String ackCacheRoot = null;
     String ackCacheFolder = null;
 
+    @Override
+    public boolean supportsDelete() {
+        return true;
+    }
+
     public DEFCleanAndAcknowledge(Level _level, Component _resource) throws RuntimeException {
         super(_level, _resource);
         _component = _resource;

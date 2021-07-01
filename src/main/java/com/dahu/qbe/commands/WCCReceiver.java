@@ -268,31 +268,8 @@ public class WCCReceiver extends CommandPluginBase {
                 doc.setData(buffer.toByteArray());
 
                 // dump out the request for debugging
-                if (logger.isDebugEnabled()) {
-                    HttpServletRequest req = _context.getQueryRequest().getRequest();
-                    logger.trace("APIServlet - request: " + req.getRequestURL());
-                    logger.trace("APIServlet - request method: " + req.getMethod());
-                    Enumeration<String> params = req.getParameterNames();
-                    while (params.hasMoreElements()) {
-                        String paramName = params.nextElement();
-                        logger.debug("APIServlet -Parameter Name - " + paramName + ", Value - " + req.getParameter(paramName));
-                    }
-                    Enumeration<String> headerNames = req.getHeaderNames();
-                    while (headerNames.hasMoreElements()) {
-                        String headerName = headerNames.nextElement();
-                        logger.debug("APIServlet - Header Name - " + headerName + ", Value - " + req.getHeader(headerName));
-                    }
-
-                    // dump the request body if post
-                    if ("POST".equalsIgnoreCase(req.getMethod())) {
+                if ("POST".equalsIgnoreCase(_context.getQueryRequest().getRequest().getMethod())) {
                         logger.debug("APIServlet - post body size: " + buffer.size());
-                        if (buffer.size() > 0) {
-                            String shortBody = buffer.toString().substring(0, Math.min(buffer.size(), 1000));
-
-                            logger.debug("APIServlet - post body data (first 1000): " + shortBody + "...");
-
-                        }
-                    }
                 }
             }
 
