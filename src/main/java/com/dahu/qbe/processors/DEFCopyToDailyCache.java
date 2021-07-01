@@ -196,7 +196,7 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
                                     String newPath = testExists.getAbsolutePath().substring(0, testExists.getAbsolutePath().lastIndexOf(File.separator));
                                     if (null != newPath) {
                                         deleteDirectoryTree(newPath);
-                                        statusLogger.info(String.format("Copy to Daily Cache: deleted doc %s from ", _iDoc.getId(), newPath));
+                                        statusLogger.info(String.format("Copy to Daily Cache: deleted doc %s from %s", _iDoc.getId(), newPath));
                                     }
                                 } catch (IOException e) {
                                     statusLogger.warn(String.format("Copy to Daily Cache: Failed to process doc %s for deletion", _iDoc.getId()));
