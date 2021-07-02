@@ -85,6 +85,10 @@ public class inboundPesWebApiRequest {
             } catch (UnsupportedEncodingException e) {
                 logger.warn("unsupported encoding exception while trying to decode meta value:" +e.getLocalizedMessage());
                 DEFLogManager.LogStackTrace(logger, "Exception in InboundPesWebApiRequest:constructor", e);
+            } catch (IllegalArgumentException ie){
+                // looks like there was a problem URL-decoding the values- possibly because they are not URL encoded..
+                // log it and add the value as we received it
+                logger.warn(String.format("failed to decode the value for %s. adding it anyway",h));
             }
 
             if (h.toLowerCase().startsWith(ACTION+"=")){
