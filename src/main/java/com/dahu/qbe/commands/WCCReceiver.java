@@ -193,7 +193,7 @@ public class WCCReceiver extends CommandPluginBase {
         // we get the queue to post to from the properties
         Set<String> queueMappingKeys  = PluginConfig.getPluginProperties(thisCommand.getName()).getAllSubPropertyNames("queueMapping");
         for (String queueMappingKey : queueMappingKeys ){
-            Set<String> queueList = PluginConfig.getPluginProperties(thisCommand.getName()).getPropertiesByName ("queueMapping::"+queueMappingKey);
+            Set<String> queueList = (Set<String>) PluginConfig.getPluginProperties(thisCommand.getName()).getPropertiesByName ("queueMapping::"+queueMappingKey);
             for(String queue : queueList){
                 if (queue.equalsIgnoreCase(index)){
                     remoteQueue = queueMappingKey;

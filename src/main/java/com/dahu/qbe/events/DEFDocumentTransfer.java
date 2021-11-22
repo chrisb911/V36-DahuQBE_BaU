@@ -14,7 +14,6 @@ import com.dahu.def.exception.DEFQueueException;
 import com.dahu.def.plugins.EventPluginBase;
 import com.dahu.def.types.Event;
 import com.dahu.def.types.Metric;
-import com.dahu.def.types.Queue2_0;
 import com.dahu.qbe.DEF_QBE_BAU_CONSTANTS;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,7 @@ public class DEFDocumentTransfer extends EventPluginBase {
     private Logger statusLogger_;
     private String remoteCache_ = null;
     private String localCache_ = null;
-    private Queue2_0 queue_;
+    private iQueue queue_;
     private Event event_;
 
     public DEFDocumentTransfer(Level _level, Event _plugin){
@@ -44,7 +43,7 @@ public class DEFDocumentTransfer extends EventPluginBase {
         if (outputQueues.size() <1){
             logger.warn("Event should be configured with one output queue. The config has " + outputQueues.size());
         } else {
-            queue_ = (Queue2_0) ServerConfig.getQueues().get(PluginConfig.getFirstOutputQueue(_event.getName()));
+            queue_ =  ServerConfig.getQueues().get(PluginConfig.getFirstOutputQueue(_event.getName()));
         }
 
         remoteCache_ = PluginConfig.getPluginProperties(_event.getName()).getPropertyByName(DEF_QBE_BAU_CONSTANTS.CONFIG_PES_REMOTECACHE);

@@ -1,17 +1,35 @@
 const configs = {
     debug : "false",
-    basename : "admin",
-    serverurl : "/admin",
-    appname : "OPC Admin",
-    signin : "Google",
-    refreshInterval:2000,
-    google :{
-        googleclientid : "104594742807-r9tns6theuch8pkj6hne2bpl85rnijvo.apps.googleusercontent.com",
-        endUserEmulation:false
-    },
-    azure :{
-        microsoftclientid : "4a770322-470e-42e5-90b8-5dac6952d8b3",
-        tenantUrl : "https://login.microsoftonline.com/24209931-90be-4929-8a86-9a180f5611ad",
+    appname : "QBE Search",
+    signin : "DEF",
+    suggest: "queries",
+    PDFViewer:true,
+    MarkupViewer:true,
+    features: {
+        "SavedConstraints":"true",
+        "HomePageHeaderSearchOptions":false,
+        "HomePageHeader":true,
+        "HomePageFilters":true,
+        "HomePageHeaderSavedSearches":true,
+        "ResultsPageSearchOptions":true,
+        "ResultsPageHeaderSavedSearches":true,
+        "HomePageSavedSearches":false,
+        "ResultShowParentLink":true,
+        "ResultShowSourceIcon":true,
+        "ResultsHeaderSearchWithin":true,
+        "ResultsPageHeaderSearch":true,
+        "ShowSearchHistoryOption": true,             // show the option 'show history' in header menu (also depends if Surface has useHistory enabled)
+        "ShowEmailResultsOption": true,               // show the option 'email results' in header menu. Uses client's installed email app.
+        "enableSearchSuggestions":true,               // if false,the search entry boxes won't make query suggestions, regardless of the settings in Surface
+        "ResultsPageResultOptions":true,               // not fully implemented - actions for each result, including add to export basket, flag, comment etc
+        "ResultsPageResultOptionsSets":false,
+        "ResultsPageResultOptionsFlags":true,
+        "ResultsPageResultOptionsComments":true
     }
-};
+    ,
+    google :{
+        googleclientid : "360146944373-fc0ueql4fm9kqfu75g5re86h3sdp68tk.apps.googleusercontent.com",
+        endUserEmulation:false
+    }
 
+};
