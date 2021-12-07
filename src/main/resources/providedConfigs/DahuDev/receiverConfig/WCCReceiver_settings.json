@@ -10,14 +10,10 @@
         "financial",
         "qbe",
         "others",
-        "medical"
-      ],
-      "filterCache_81": [
+        "medical",
         "proceedings",
         "broker",
-        "history"
-      ],
-      "filterCache_82": [
+        "history",
         "cru",
         "thirdparty",
         "reports"

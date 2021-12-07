@@ -21,8 +21,8 @@
     {
       "name": "send",
       "jar": "DahuQBEbau.jar",
-      "class": "com.dahu.qbe.commands.WCCSendSimulator",
-      "settingsFile": "WCCSendSimulator_settings.json"
+      "class": "com.dahu.qbe.commands.WCCBulkSendSimulator",
+      "settingsFile": "WCCBulkSendSimulator_settings.json"
     },
     {
       "name": "cs",

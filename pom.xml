@@ -9,13 +9,13 @@ them and make sure they are the correct versions -->
     <!-- You need to pull the correct version of DEFServer into a directory called 'DEFServer' at the same
     level as this module. Please make sure you pull the correct version if you are re-building this kit  -->
     <properties>
-        <DahuDEFServer.version>3.6.47</DahuDEFServer.version>
-        <DahuVector.version>3.6.9</DahuVector.version>
-        <DahuEdge.version>3.6.16</DahuEdge.version>
+        <DahuDEFServer.version>3.6.48</DahuDEFServer.version>
+        <DahuVector.version>3.6.10</DahuVector.version>
+        <DahuEdge.version>3.6.17</DahuEdge.version>
 		<DahuAdminUI.version>3.6.4</DahuAdminUI.version>
         <DahuSearchUI.version>3.6.17</DahuSearchUI.version>
-        <DahuCommon.version>3.6.12</DahuCommon.version>
-        <DahuSurface.version>3.6.13</DahuSurface.version>
+        <DahuCommon.version>3.6.13</DahuCommon.version>
+        <DahuSurface.version>3.6.15</DahuSurface.version>
         <log4j.version>2.13.3</log4j.version>
     </properties>
     <scm>
@@ -609,7 +609,7 @@ them and make sure they are the correct versions -->
                             </tasks>
                         </configuration>
                     </execution>
-                    <!--execution>
+                    <execution>
                         <id>zip-kit</id>
                         <phase>install</phase>
                         <configuration>
@@ -623,7 +623,7 @@ them and make sure they are the correct versions -->
                         <goals>
                             <goal>run</goal>
                         </goals>
-                    </execution-->
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
