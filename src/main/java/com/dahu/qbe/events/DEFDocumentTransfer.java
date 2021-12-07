@@ -54,6 +54,42 @@ public class DEFDocumentTransfer extends EventPluginBase {
         if (! localDirectory.exists()) {
             localDirectory.mkdir();
         }
+        // on startup, check if there are any files in the local directory that haven't been process and submit them now..
+        // get list of all the files in the remote cache directory.
+        List<String> localFilesList = new ArrayList<>();
+        File dirFolder = new File(localCache_ );
+        File[] files = dirFolder.listFiles();
+        if (null != files && files.length >0) {
+            for (final File f : files) {
+                if (f.isFile()) {
+                    localFilesList.add(f.getAbsolutePath());
+                }
+            }
+        }
+        if (localFilesList.size() > 0) {
+            statusLogger_.info(String.format("DEF Doc Transfer: processing %s local unprocessed docs at startup", localFilesList.size()));
+            int postCount = 0;
+            for (String fileName : localFilesList) {
+                // get the local file name
+                String localFileName = localCache_ + File.separator + fileName.substring(fileName.lastIndexOf(File.separator));
+
+                // post on queue
+                try {
+                    // create an idoc with an id and a source and call toJson and put that on the queue
+                    // ... processor stage will throw this away, create a new idoc from on disk file, and add filepatch as metadata
+                    iDocument doc = new DEFDocument(localFileName,"file");
+                    doc.addField("filepath",localFileName);
+                    statusLogger_.debug(String.format("DEF Doc Transfer:  (startup) queueing msg (%d) %s from %s ",postCount, doc.getId(), localFileName));
+                    queue_.postTextMessage(doc.toJson());
+                    statusLogger_.debug(String.format("DEF Doc Transfer: (startup) queued msg (%d) %s from %s ",postCount, doc.getId(), localFileName));
+                    postCount++;
+                } catch (DEFQueueException e) {
+                    logger.warn(String.format("Failed to post message '%s' on queue '%s'", localFileName, queue_.getName()));
+                    statusLogger_.warn(String.format("DEF Doc Transfer: Failed to post message '%s' on queue %s",localFileName,queue_.getName()));
+                    DEFLogManager.LogStackTrace(DEFLogManager.getDEFSysLog(),"DEF DocTransfer - problem queueing message",e);
+                }
+            }
+        }
     }
 
     @Override
@@ -90,7 +126,7 @@ public class DEFDocumentTransfer extends EventPluginBase {
 
 
         if (remoteFilesList.size() > 0) {
-            statusLogger_.info(String.format("PES Doc Transfer: Transferring  %s docs",remoteFilesList.size() ));
+            statusLogger_.info(String.format("DEF Doc Transfer: Transferring  %s docs",remoteFilesList.size() ));
             int transferCount = 0;
             int deleteCount = 0;
             // now, for this batch of files process each one in turn, copying locally
@@ -103,20 +139,23 @@ public class DEFDocumentTransfer extends EventPluginBase {
                 try {
                     sourceChannel = new FileInputStream(new File(fileName)).getChannel();
                     destChannel = new FileOutputStream(new File(localFileName)).getChannel();
+                    statusLogger_.debug(String.format("DEF Doc Transfer: transferring file %s to %s",fileName,localFileName));
                     destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
                     copied = true;
                 } catch (IOException e) {
                     logger.warn(String.format("Failed to copy file %s to %s",fileName,localFileName));
+                    statusLogger_.warn(String.format("DEF Doc Transfer: Failed to copy file %s to %s",fileName,localFileName));
+                    DEFLogManager.LogStackTrace(DEFLogManager.getDEFSysLog(),"DEF DocTransfer - problem copying file",e);
                 } finally {
                     try {
                         sourceChannel.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        DEFLogManager.LogStackTrace(DEFLogManager.getDEFSysLog(),"DEF DocTransfer - problem closing sourceChannel",e);
                     }
                     try {
                         destChannel.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        DEFLogManager.LogStackTrace(DEFLogManager.getDEFSysLog(),"DEF DocTransfer - problem closing destChanel",e);
                     }
                 }
                 if (copied) {
@@ -128,11 +167,14 @@ public class DEFDocumentTransfer extends EventPluginBase {
                         // ... processor stage will throw this away, create a new idoc from on disk file, and add filepatch as metadata
                         iDocument doc = new DEFDocument(localFileName,"file");
                         doc.addField("filepath",localFileName);
-
+                        statusLogger_.debug(String.format("DEF Doc Transfer: queueing msg (%d) %s from %s ",transferCount, doc.getId(), localFileName));
                         queue_.postTextMessage(doc.toJson());
+                        statusLogger_.debug(String.format("DEF Doc Transfer: queued msg (%d) %s from  %s",transferCount ,doc.getId(),localFileName));
                         queued = true;
                     } catch (DEFQueueException e) {
                         logger.warn(String.format("Failed to post message '%s' on queue '%s'", localFileName, queue_.getName()));
+                        statusLogger_.warn(String.format("DEF Doc Transfer: failed to queue msg (%d)  %s",transferCount ,localFileName));
+                        DEFLogManager.LogStackTrace(DEFLogManager.getDEFSysLog(),"DEF DocTransfer - problem queueing message",e);
                     }
                     if (queued) {
                         deleteCount++;
@@ -140,22 +182,24 @@ public class DEFDocumentTransfer extends EventPluginBase {
                         File deleteFile = new File(fileName);
                         try {
                             deleteFile.delete();
+                            statusLogger_.debug(String.format("DEF Doc Transfer: deleted remote (%d) file %s",deleteCount,fileName));
                         } catch (Exception e) {
                             logger.warn(String.format("Failed to delete message '%s'. %s", localFileName,e.getLocalizedMessage() ));
-                            statusLogger_.warn(String.format("PES Doc Transfer: Failed to remove %d of %d docs",deleteCount,remoteFilesList.size() ));
+                            statusLogger_.warn(String.format("DEF Doc Transfer: Failed to remove %d of %d docs",deleteCount,remoteFilesList.size() ));
+                            DEFLogManager.LogStackTrace(DEFLogManager.getDEFSysLog(),"DEF DocTransfer - problem deleting file",e);
                         }
                     }
                 }
             }
             if (transferCount == remoteFilesList.size()){
-                statusLogger_.info(String.format("PES Doc Transfer: Transferred  %s docs",remoteFilesList.size() ));
+                statusLogger_.info(String.format("DEF Doc Transfer: Transferred  %s docs",remoteFilesList.size() ));
             } else {
-                statusLogger_.warn(String.format("PES Doc Transfer: Failed to transfer %d of %d docs",transferCount,remoteFilesList.size() ));
+                statusLogger_.warn(String.format("DEF Doc Transfer: Failed to transfer %d of %d docs",transferCount,remoteFilesList.size() ));
             }
             if (deleteCount == remoteFilesList.size()){
-                statusLogger_.info(String.format("PES Doc Transfer: Removed  %s remote docs",remoteFilesList.size() ));
+                statusLogger_.info(String.format("DEF Doc Transfer: Removed  %s remote docs",remoteFilesList.size() ));
             } else {
-                statusLogger_.warn(String.format("PES Doc Transfer: Failed to remove %d of %d docs",deleteCount,remoteFilesList.size() ));
+                statusLogger_.warn(String.format("DEF Doc Transfer: Failed to remove %d of %d docs",deleteCount,remoteFilesList.size() ));
             }
         }
     }
