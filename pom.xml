@@ -9,7 +9,7 @@ them and make sure they are the correct versions -->
     <!-- You need to pull the correct version of DEFServer into a directory called 'DEFServer' at the same
     level as this module. Please make sure you pull the correct version if you are re-building this kit  -->
     <properties>
-        <DahuDEFServer.version>3.6.49</DahuDEFServer.version>
+        <DahuDEFServer.version>3.6.50</DahuDEFServer.version>
         <DahuVector.version>3.6.10</DahuVector.version>
         <DahuEdge.version>3.6.17</DahuEdge.version>
 		<DahuAdminUI.version>3.6.4</DahuAdminUI.version>
