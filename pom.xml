@@ -9,14 +9,14 @@ them and make sure they are the correct versions -->
     <!-- You need to pull the correct version of DEFServer into a directory called 'DEFServer' at the same
     level as this module. Please make sure you pull the correct version if you are re-building this kit  -->
     <properties>
-        <DahuDEFServer.version>3.6.50</DahuDEFServer.version>
-        <DahuVector.version>3.6.10</DahuVector.version>
-        <DahuEdge.version>3.6.17</DahuEdge.version>
+        <DahuDEFServer.version>3.6.52</DahuDEFServer.version>
+        <DahuVector.version>3.6.12</DahuVector.version>
+        <DahuEdge.version>3.6.19</DahuEdge.version>
 		<DahuAdminUI.version>3.6.4</DahuAdminUI.version>
         <DahuSearchUI.version>3.6.17</DahuSearchUI.version>
-        <DahuCommon.version>3.6.13</DahuCommon.version>
-        <DahuSurface.version>3.6.15</DahuSurface.version>
-        <log4j.version>2.13.3</log4j.version>
+        <DahuCommon.version>3.6.16</DahuCommon.version>
+        <DahuSurface.version>3.6.18</DahuSurface.version>
+        <log4j.version>2.17.1</log4j.version>
     </properties>
     <scm>
         <developerConnection>scm:git:https://dahu.codebasehq.com/def36-dahu-projects/${project.artifactId}.git</developerConnection>
@@ -27,7 +27,7 @@ them and make sure they are the correct versions -->
     <groupId>com.dahu</groupId>
     <artifactId>DahuQBEbau</artifactId>
     <name>Dahu QBE B.A.U</name>
-    <version>3.6.10</version>
+    <version>3.6.11</version>
     <packaging>jar</packaging>
     <distributionManagement>
         <repository>
@@ -166,7 +166,6 @@ them and make sure they are the correct versions -->
                                         <Implementation-Title>com.dahu</Implementation-Title>
                                         <Implementation-Version>${project.version}</Implementation-Version>
                                         <Implementation-Vendor>Dahu Ltd</Implementation-Vendor>
-                                        <Class-Path>./log4j-api-${log4j.version}.jar ./log4j-core-${log4j.version}.jar</Class-Path>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
