@@ -29,6 +29,7 @@ public class DEFDocumentTransfer extends EventPluginBase {
     private Logger statusLogger_;
     private String remoteCache_ = null;
     private String localCache_ = null;
+    private String quarantine = null;
     private iQueue queue_;
     private Event event_;
 
@@ -48,6 +49,7 @@ public class DEFDocumentTransfer extends EventPluginBase {
 
         remoteCache_ = PluginConfig.getPluginProperties(_event.getName()).getPropertyByName(DEF_QBE_BAU_CONSTANTS.CONFIG_PES_REMOTECACHE);
         localCache_ = PluginConfig.getPluginProperties(_event.getName()).getPropertyByName(DEF_QBE_BAU_CONSTANTS.CONFIG_PES_LOCALCACHE);
+        quarantine = PluginConfig.getPluginProperties(_event.getName()).getPropertyByName(DEF_QBE_BAU_CONSTANTS.CONFIG_PES_QUARANTINE);
 
         // create the local dir if it doesn't exist already
         File localDirectory = new File(localCache_);
@@ -62,7 +64,51 @@ public class DEFDocumentTransfer extends EventPluginBase {
         if (null != files && files.length >0) {
             for (final File f : files) {
                 if (f.isFile()) {
-                    localFilesList.add(f.getAbsolutePath());
+                    // Chris - 14/06/2022 now, because we do some renaming of local files during processing
+                    // we only want to push files that are of type "idoc". any of type 'idoc_ip" (in process)
+                    // we move to quarantine.
+                    if (f.getAbsoluteFile().toString().endsWith("idoc")) {
+                        localFilesList.add(f.getAbsolutePath());
+                    }
+                    if (f.getAbsoluteFile().toString().endsWith("idoc_ip")) {
+                        logger.warn("quarantining file " + f.getAbsolutePath() +". Possible crash during processing");
+                        statusLogger_.warn("DEF Doc Transfer: quarantining file " + f.getAbsolutePath() +". Possible crash during previous processing");
+                        // does the quarantine directory exist?
+                        if (null != quarantine) {
+                            File quarantineDirectory = new File(quarantine);
+                            if (!quarantineDirectory.exists()) {
+                                quarantineDirectory.mkdir();
+                            }
+                            String newFileLocation = quarantine + File.separator + f.getName();
+                            File renameFile = new File(newFileLocation);
+                            File  existingFile = new File(f.getAbsolutePath());
+
+                            if (renameFile.exists()) {
+                                statusLogger_.warn(String.format("DEF Doc Transfer:: Failed to quarantine doc as %s. a document with this name exists in the quarantine directory",renameFile));
+                                logger.warn("Failed to quarantine doc as a document with this name exists in the quarantine directory. " +  newFileLocation);
+                                if (!existingFile.delete()){
+                                    statusLogger_.warn(String.format("DEF Doc Transfer:: Failed to delete doc %s. both quarantine rename and delete failed",f.getAbsolutePath()));
+                                    logger.warn("failed to delete file. both quarantine rename  and delete " + f.getAbsolutePath() + " to " + newFileLocation);
+                                }
+                            }
+
+                            if (!existingFile.renameTo(renameFile)){
+                                statusLogger_.warn(String.format("DEF Doc Transfer:: Failed to quarantine doc as %s. rename failed",f.getAbsolutePath()));
+                                logger.warn("failed to rename file to quarantine. Rename failed. File deleted as it already is quarantined " + f.getAbsolutePath() + " to " + newFileLocation);
+                                 //quarantining failed - we should delete it to keep the cache fresh
+                                if (!existingFile.delete()){
+                                    statusLogger_.warn(String.format("DEF Doc Transfer:: Failed to delete doc %s. both quarantine rename and delete failed",f.getAbsolutePath()));
+                                    logger.warn("failed to delete file. both quarantine rename  and delete " + f.getAbsolutePath() + " to " + newFileLocation);
+
+                                }
+                            }
+
+                        } else {
+                            logger.error("no quarantine directory specified in the configuration for DEF Doc Transfer");
+                        }
+
+                    }
+
                 }
             }
         }

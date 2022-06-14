@@ -18,6 +18,7 @@ public class DEF_QBE_BAU_CONSTANTS {
     public static final String CONFIG_WCC_ACKCACHEFOLDER = "ackCacheFolder";
     public static final String CONFIG_PES_REMOTECACHE = "remoteCache";
     public static final String CONFIG_PES_LOCALCACHE = "localCache";
+    public static final String CONFIG_PES_QUARANTINE = "quarantine";
 
     public static final String CONFIG_WCC_ACKCACHES = "ackCaches";
     public static final String CONFIG_WCC_ACKBATCHSIZE = "batchSize";

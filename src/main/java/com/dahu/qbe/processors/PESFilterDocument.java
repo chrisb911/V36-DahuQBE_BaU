@@ -19,6 +19,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -140,6 +141,31 @@ public class PESFilterDocument extends AbstractProcessor {
     public iDocument process(iDocument _iDoc){
 
         // get the document from local cache that is pointed to by this message
+
+        String localFilepath=null;
+        try {
+            localFilepath = _iDoc.getFieldValue("filePath");
+        } catch (BadMetaException e) {
+            statusLogger.warn(String.format("PES Filter document: Failed to process doc %s for addition. no local filepath given",_iDoc.getId()));
+            logger.warn("no filepath found in the iDoc - can't mark document as pending.");
+        }
+        // we rename the local file we are processing. We do this so that if we have a catastrophic failure while processing
+        // that crashes the JVM (it happens) we know on a restart to quarantine any 'processing' docs so that we can continue.
+        if (null != localFilepath){
+            File existingFile = new File(localFilepath);
+            File renamedFile = new File(localFilepath.concat("_ip"));
+
+            if (renamedFile.exists()) {
+                statusLogger.warn(String.format("PES Filter document: Failed to process doc %s for addition. failed to rename local file prior to processing. Destination exists",_iDoc.getId()));
+                logger.warn("failed to rename local file prior to processing. Destination file already exists.");
+            }
+
+            if (!existingFile.renameTo(renamedFile)){
+                statusLogger.warn(String.format("PES Filter document: Failed to process doc %s for addition. failed to rename local file prior to processing",_iDoc.getId()));
+                logger.warn("failed to rename local file prior to processing. Rename failed.");
+            }
+
+        }
 
         String action = _iDoc.getAction();
         if (null == action || !(action.equalsIgnoreCase("insert") || action.equalsIgnoreCase("delete"))){
@@ -284,6 +310,24 @@ public class PESFilterDocument extends AbstractProcessor {
                 logger.warn("failed to delete directory '" + dirToDeleteName + "'");
                 _iDoc.addField("SYNC", "false");
             }
+        }
+
+        // we rename the local file we are processing back again. We do this so that if we have a catastrophic failure while processing
+        // that crashes the JVM (it happens) we know on a restart to quarantine any 'processing' docs so that we can continue.
+        if (null != localFilepath){
+            File renameFile = new File(localFilepath);
+            File  existingFile = new File(localFilepath.concat("_ip"));
+
+            if (renameFile.exists()) {
+                statusLogger.warn(String.format("PES Filter document: Failed to process doc %s for addition. failed to restore local file after to processing. Destination exists",_iDoc.getId()));
+                logger.warn("failed to rename local file after to processing. Destination file already exists.");
+            }
+
+            if (!existingFile.renameTo(renameFile)){
+                statusLogger.warn(String.format("PES Filter document: Failed to process doc %s for addition. failed to rename local file after to processing",_iDoc.getId()));
+                logger.warn("failed to rename local file after to processing. Rename failed.");
+            }
+
         }
 
         return _iDoc;
