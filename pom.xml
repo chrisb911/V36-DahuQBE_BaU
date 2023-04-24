@@ -19,7 +19,8 @@ them and make sure they are the correct versions -->
         <log4j.version>2.17.1</log4j.version>
     </properties>
     <scm>
-        <developerConnection>scm:git:https://dahu.codebasehq.com/def36-dahu-projects/${project.artifactId}.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:chrisb911/V36-DahuQBE_BaU.git</developerConnection>
+
         <tag>HEAD</tag>
     </scm>
 
