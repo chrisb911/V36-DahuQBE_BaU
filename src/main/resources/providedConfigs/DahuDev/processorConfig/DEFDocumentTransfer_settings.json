@@ -6,7 +6,8 @@
   "pluginSettings":{
     "interval":"30000",
     "logLevel":"WARN",
-    "remoteCache":"/Users/chrisbartlett/Development/CLIENT-3.6/qbe/rec-run/pendingCache/filterCache_80",
-    "localCache":"localPendingCache"
+    "remoteCache":"/Users/chrisbartlett/Development/newWorld/V36-DahuQBE_BaU/run/receiverPendingCache/processor",
+    "localCache":"processorPendingCache",
+    "quarantine":"processorQuarantine"
   }
 }

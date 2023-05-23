@@ -89,7 +89,7 @@ public class WCCBulkSendSimulator extends CommandPluginBase {
 
             BufferedReader reader;
             try {
-                reader = new BufferedReader(new FileReader(docDir + File.separator + bulkFileName));
+                reader = new BufferedReader(new FileReader(docDir + File.separator + bulkFileName ));
                 String line = reader.readLine();
 
                 while (null != line){

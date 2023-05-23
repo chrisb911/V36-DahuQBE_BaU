@@ -4,6 +4,7 @@ import com.dahu.core.abstractcomponent.AbstractProcessor;
 import com.dahu.core.exception.BadMetaException;
 import com.dahu.core.interfaces.iDocument;
 import com.dahu.core.logging.DEFLogManager;
+import com.dahu.core.utils.DahuStringUtils;
 import com.dahu.qbe.utils.fileSharder;
 import com.dahu.def.exception.BadConfigurationException;
 import com.dahu.def.types.Component;
@@ -20,14 +21,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
+import java.util.stream.Collectors;
 
 
 public class DEFCopyToDailyCache extends AbstractProcessor {
@@ -74,12 +72,12 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
         logger.debug("CopyToDailyCache - root output folder: " + rootOutputFolder);
         logger.debug("CopyToDailyCache - root input folder: " + rootInputFolder);
 
-        // run the zipFiles checker - looks to see if we've run over midnight to generate new files
-        // and creates the zip file for the cache
+        // run the zipAndClean checker - looks to see if we've run over midnight to generate new files
+        // and creates the zip file for the cache, and then does housekeeping to cleanup after any delivered files
         ScheduledExecutorService zipPrevCache = Executors.newScheduledThreadPool(1);
         zipPrevCache.scheduleAtFixedRate(new Runnable() {
             public void run() {
-                zipFiles(logger, rootOutputFolder, rootInputFolder, zipPrefix, zipPassword, dropFolder);
+                zipAndClean(logger,statusLogger, rootOutputFolder, rootInputFolder, zipPrefix, zipPassword, dropFolder);
             }
         }, 1, 10, TimeUnit.SECONDS);
 
@@ -231,8 +229,8 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
         return _iDoc;
     }
 
-    private static synchronized void zipFiles(Logger _logger, String _rootDir, String _originDir, String _zipPrefix, String _zipPassword, String _dropFolder) {
-        // simply look for yesterday's cache, and if its there but we don't have a zip already, zip it up now
+    private static synchronized void zipAndClean(Logger _logger,Logger _statusLogger, String _rootDir, String _originDir, String _zipPrefix, String _zipPassword, String _dropFolder) {
+        // first look for yesterday's cache, and if its there but we don't have a zip already, zip it up now
 
         // is the dropFolder actually there? If not, create it
         File dropDir = new File(_rootDir + File.separator + _dropFolder);
@@ -338,6 +336,98 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
                     }
                 }
             }
+        }
+        // now we clean up all the files that have been delivered. That means the zip file, the .comp file, the .delivered file and also the files in the cache.
+        // start by building a list of the content we want to get rid of.
+        List<String> filesToDeleteList = new ArrayList<>();
+        if (null != dropDir && dropDir.exists() && dropDir.isDirectory()) {
+            File files[] = dropDir.listFiles();
+            if (null != files && files.length > 0) {
+                for (File file : files) {
+                    if (file.getName().endsWith(".delivered")) {
+                        filesToDeleteList.add(DahuStringUtils.before(file.getName(), ".delivered"));
+                    }
+                }
+            }
+        }
+        if (filesToDeleteList.size()>0){
+            // get to work cleaning up.
+            for (String fileToDelete : filesToDeleteList){
+                // firstly, generate the cache name and delete it if its there
+                String fileId = DahuStringUtils.after(fileToDelete,"-");
+                String cacheName = _rootDir+File.separator+"cache-"+fileId;
+                // test if it exists
+                File cacheFile = new File(cacheName);
+                if (cacheFile.exists()){
+                    try {
+                        cacheFile.delete();
+                        _statusLogger.info(String.format("Copy to Daily Cache:: Deleted cache file",cacheFile));
+                        _logger.debug("Deleted cache file for delivered files " + cacheName );
+                    } catch (Exception e){
+                        _statusLogger.info(String.format("Failed when trying to delete cache file for delivered files " + cacheFile + e.getLocalizedMessage()));
+                        _logger.warn("Failed when trying to delete cache file for delivered files " + cacheName );
+                    }
+                }
+                // also get rid of the zip, the comp and the delivered file
+                File zipFile = new File(dropDir+ File.separator+fileToDelete+".zip");
+                if (zipFile.exists()){
+                    try {
+                        zipFile.delete();
+                        _statusLogger.info(String.format("Copy to Daily Cache:: Deleted zip file",fileToDelete+".zip"));
+                        _logger.debug("Deleted cache file for delivered files " + fileToDelete+".zip" );
+                    } catch (Exception e){
+                        _statusLogger.info(String.format("Failed when trying to delete zip file for delivered files " + fileToDelete+".zip" + e.getLocalizedMessage()));
+                        _logger.warn("Failed when trying to delete zip file for delivered files " + fileToDelete+".zip" );
+                    }
+                }
+
+                File updateXMLFile = new File(dropDir+ File.separator+fileToDelete+"-update.xml");
+                if (updateXMLFile.exists()){
+                    try {
+                        updateXMLFile.delete();
+                        _statusLogger.info(String.format("Copy to Daily Cache:: Deleted update xml file",fileToDelete+"-update.xml"));
+                        _logger.debug("Deleted update xml file " + fileToDelete+"-update.xml" );
+                    } catch (Exception e){
+                        _statusLogger.info(String.format("Failed when trying to delete update xml file  " + fileToDelete+"-update.xml" + e.getLocalizedMessage()));
+                        _logger.warn("Failed when trying to delete update xml file  " + fileToDelete+"-update.xml" );
+                    }
+                }
+                File deleteXMLFile = new File(dropDir+ File.separator+fileToDelete+"-delete.xml");
+                if (deleteXMLFile.exists()){
+                    try {
+                        deleteXMLFile.delete();
+                        _statusLogger.info(String.format("Copy to Daily Cache:: Deleted delete xml file",fileToDelete+"-delete.xml"));
+                        _logger.debug("Deleted delete xml file " + fileToDelete+"-delete.xml" );
+                    } catch (Exception e){
+                        _statusLogger.info(String.format("Failed when trying to delete delete xml file  " + fileToDelete+"-delete.xml" + e.getLocalizedMessage()));
+                        _logger.warn("Failed when trying to delete delete xml file  " + fileToDelete+"-delete.xml" );
+                    }
+                }
+                File compFile = new File(dropDir+ File.separator+fileToDelete+".comp");
+                if (compFile.exists()){
+                    try {
+                        compFile.delete();
+                        _statusLogger.info(String.format("Copy to Daily Cache:: Deleted comp file",fileToDelete+".comp"));
+                        _logger.debug("Deleted comp file for delivered files " + fileToDelete+".comp" );
+                    } catch (Exception e){
+                        _statusLogger.info(String.format("Failed when trying to delete comp file for delivered files " + fileToDelete+".comp" + e.getLocalizedMessage()));
+                        _logger.warn("Failed when trying to delete comp file for delivered files " + fileToDelete+".comp" );
+                    }
+                }
+                File deliveredFile = new File(dropDir+ File.separator+fileToDelete+".delivered");
+                if (deliveredFile.exists()){
+                    try {
+                        deliveredFile.delete();
+                        _statusLogger.info(String.format("Copy to Daily Cache:: Deleted delivered file",fileToDelete+".delivered"));
+                        _logger.debug("Deleted delivered file " + fileToDelete+".delivered" );
+                    } catch (Exception e){
+                        _statusLogger.info(String.format("Failed when trying to delete delivered file  " + fileToDelete+".delivered" + e.getLocalizedMessage()));
+                        _logger.warn("Failed when trying to delete delivered file  " + fileToDelete+".delivered" );
+                    }
+                }
+            }
+
+
         }
     }
 

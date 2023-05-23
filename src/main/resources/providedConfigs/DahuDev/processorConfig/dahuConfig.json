@@ -19,16 +19,28 @@
   "DEFPermitsFile": "DEFPermitMap.json",
   "metrics": [
     {
-      "name": "localPendingCache",
+      "name": "processorPending",
       "type": "directoryCount",
-      "resource": "localPendingCache",
-      "label": "Local Pending cache"
+      "resource": "processorPendingCache",
+      "label": "Processor Pending"
+    },
+    {
+      "name": "processorQuarantine",
+      "type": "directoryCount",
+      "resource": "processorQuarantine",
+      "label": "Processor Quarantine"
+    },
+    {
+      "name": "readyToCollect",
+      "type": "directoryCount",
+      "resource": "df-daily-export/current:comp",
+      "label": "Ready to Collect"
     },
     {
       "name": "daily-export",
       "type": "fileContentCount",
       "resource": "df-daily-export/current",
-      "label": "none"
+      "label": "daily export"
     }
   ],
   "services":[

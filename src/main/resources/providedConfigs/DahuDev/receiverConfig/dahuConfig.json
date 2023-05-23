@@ -1,5 +1,5 @@
 {
-  "logLevel":"INFO",
+  "logLevel":"DEBUG",
   "name":"DEF-WCC Receiver",
   "threads":"40",
   "admin":"true",

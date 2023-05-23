@@ -2,11 +2,11 @@
   "DEFSettings": {
   },
   "pluginSettings": {
-    "pendingCache": "pendingCache",
+    "pendingCache": "receiverPendingCache",
     "ackCache": "ackCache",
     "ackCacheFolder": "primary",
     "queueMapping": {
-      "filterCache_80": [
+      "processor": [
         "financial",
         "qbe",
         "others",

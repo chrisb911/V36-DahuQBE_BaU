@@ -3,6 +3,6 @@
   },
   "pluginSettings": {
     "postServer": "https://localhost:10101/api/WCCTranslator",
-    "documentDirectory": "/Users/chrisbartlett/Development/CLIENT-3.6/qbe/src/main/resources/providedConfigs/DahuDev/simulatorConfig/simulatorTestData"
+    "documentDirectory": "/Users/chrisbartlett/Development/newWorld/V36-DahuQBE_BaU/src/main/resources/providedConfigs/DahuDev/simulatorConfig/simulatorTestData"
   }
 }

@@ -25,13 +25,13 @@
         "inputFolder": "df-export",
         "outputFolder": "df-daily-export",
         "folderDepth": "3",
-        "zipPrefix" : "GBSLOAPPWP0080",
+        "zipPrefix" : "processor",
         "zipPassword":"dahu4ever",
         "dropFolder":"current"
       },
       "DEFCleanAndAcknowledge":{
-        "ackCache": "DEFSHARE/ackCache",
-        "ackCacheFolder": "GBCROAPPWD0048"
+        "ackCache": "ackCache",
+        "ackCacheFolder": "processor"
       }
     }
   }
