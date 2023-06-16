@@ -229,6 +229,25 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
         return _iDoc;
     }
 
+        private static void deleteCacheDirectory(File directory) {
+            if (!directory.exists()) {
+                return;
+            }
+
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteCacheDirectory(file); // Recursive call for subdirectories
+                    } else {
+                        file.delete(); // Delete individual file
+                    }
+                }
+            }
+
+            directory.delete(); // Delete the directory itself
+        }
+
     private static synchronized void zipAndClean(Logger _logger,Logger _statusLogger, String _rootDir, String _originDir, String _zipPrefix, String _zipPassword, String _dropFolder) {
         // first look for yesterday's cache, and if its there but we don't have a zip already, zip it up now
 
@@ -360,7 +379,8 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
                 File cacheFile = new File(cacheName);
                 if (cacheFile.exists()){
                     try {
-                        cacheFile.delete();
+                        //cacheFile.delete();
+                        deleteCacheDirectory(cacheFile);
                         _statusLogger.info(String.format("Copy to Daily Cache:: Deleted cache file",cacheFile));
                         _logger.debug("Deleted cache file for delivered files " + cacheName );
                     } catch (Exception e){
@@ -374,7 +394,7 @@ public class DEFCopyToDailyCache extends AbstractProcessor {
                     try {
                         zipFile.delete();
                         _statusLogger.info(String.format("Copy to Daily Cache:: Deleted zip file",fileToDelete+".zip"));
-                        _logger.debug("Deleted cache file for delivered files " + fileToDelete+".zip" );
+                        _logger.debug("Deleted zip file for delivered files " + fileToDelete+".zip" );
                     } catch (Exception e){
                         _statusLogger.info(String.format("Failed when trying to delete zip file for delivered files " + fileToDelete+".zip" + e.getLocalizedMessage()));
                         _logger.warn("Failed when trying to delete zip file for delivered files " + fileToDelete+".zip" );
